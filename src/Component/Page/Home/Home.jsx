@@ -1,8 +1,8 @@
 
 const Home = () => {
     return (
-        <div>
-            heloooo
+        <div className="pt-24">
+         
         </div>
     );
 };

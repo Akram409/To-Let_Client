@@ -1,6 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../Layout/Main";
 import Home from "../Page/Home/Home";
+import FindFlat from "../Page/FindFlat/FindFlat";
+import FindRoommate from "../Page/FindRoommate/FindRoommate";
 // import Login from "../Authentication/Login/Login";
 // import SignUp from "../Authentication/SignUp/SignUp";
 // import Profile from "../Share/Profile/Profile";
@@ -31,6 +33,15 @@ export const router = createBrowserRouter([
       //   path: "/private",
       //   element: <PrivateRouter /> ,
       // },
+
+      {
+        path:"/findSublet",
+        element:<FindFlat/>
+      },
+      {
+        path:"/findRoommate",
+        element:<FindRoommate/>
+      }
     ],
   },
 ]);
