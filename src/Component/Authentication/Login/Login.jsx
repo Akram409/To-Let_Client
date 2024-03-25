@@ -86,8 +86,8 @@ const Login = () => {
       });
   };
   return (
-    <div>
-      <div className="flex justify-center items-center">
+    <div className="">
+      <div className="flex justify-center justify-items-center items-center">
         <div className="card w-96 border border-black shadow-2xl">
           <div className="card-body">
             <div className="flex flex-col w-auto border-opacity-50 ">
@@ -188,7 +188,7 @@ const Login = () => {
           <Lottie
             animationData={house}
             loop={true}
-            style={{ width: "753px", height: "550px" }}
+            style={{ width: "700px", height: "550px" }}
           />
         </div>
       </div>
