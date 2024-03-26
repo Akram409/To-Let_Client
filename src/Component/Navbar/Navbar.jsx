@@ -1,4 +1,7 @@
+import Link from "antd/es/typography/Link";
 import MenuDropDown from "./MenuDropDown";
+import { GiFamilyHouse } from "react-icons/gi";
+
 
 const Navbar = () => {
     return (
@@ -7,7 +10,7 @@ const Navbar = () => {
              
                 <div className="flex flex-row items-center justify-between gap-3 md:gap-0">
                     {/* log0 */}
-                   logo
+                   <Link to="/"> <GiFamilyHouse  size="3.5em" color="black"/></Link>
                     {/* DropDown  */}
                    <MenuDropDown/>
                 </div>
