@@ -29,7 +29,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/signup",
+        "http://localhost:5001/signup",
         userData
       );
       console.log(response);
