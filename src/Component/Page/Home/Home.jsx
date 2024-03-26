@@ -1,8 +1,9 @@
+import FindFlat from "../FindFlat/FindFlat";
 
 const Home = () => {
     return (
-        <div>
-            heloooo
+        <div className="">
+         <FindFlat/>
         </div>
     );
 };
