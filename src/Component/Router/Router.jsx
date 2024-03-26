@@ -3,7 +3,6 @@ import Main from "../Layout/Main";
 import Home from "../Page/Home/Home";
 import Login from "../Authentication/Login/Login";
 import SignUp from "../Authentication/SignUp/SignUp";
-import FindFlat from "../Page/FindFlat/FindFlat";
 import FindRoommate from "../Page/FindRoommate/FindRoommate";
 // import Profile from "../Share/Profile/Profile";
 // import PrivateRouter from "./PrivateRouter";

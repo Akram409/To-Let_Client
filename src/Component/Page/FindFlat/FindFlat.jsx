@@ -49,15 +49,16 @@ const FindFlat = () => {
 
 
 
+
   return (
     <>
-      <div className='px-12 flex gap-10 py-5'>
+      <div className='px-5 lg:px-12 flex flex-wrap justify-center gap-10 py-5'>
         {/* this is a two button */}
 
         <div className="flex border border-black rounded-lg">
           <Link to="/">
             <button
-              className={`px-4 py-3 rounded-lg mr-2 w-44 ${activeButton === 'sublet' ? 'bg-green-400 text-black font-semibold border border-black' : 'bg-white text-black font-semibold'}`}
+              className={`px-4 py-3 rounded-lg mr-2 lg:w-44 ${activeButton === 'sublet' ? 'bg-green-400 text-black font-semibold border border-black' : 'bg-white text-black font-semibold'}`}
               onClick={() => handleClick('sublet')}
             >
               Find Sublet/Flat
@@ -65,7 +66,7 @@ const FindFlat = () => {
           </Link>
           <Link to="/findRoommate">
             <button
-              className={`px-4 py-3 rounded-lg w-44 ${activeButton === 'roommate' ? 'bg-green-400 text-black font-semibold border border-black' : 'bg-white text-black font-semibold'}`}
+              className={`px-4 py-3 rounded-lg lg:w-44 ${activeButton === 'roommate' ? 'bg-green-400 text-black font-semibold border border-black' : 'bg-white text-black font-semibold'}`}
               onClick={() => handleClick('roommate')}
             >
               Find Roommate
@@ -75,7 +76,7 @@ const FindFlat = () => {
 
         {/* search functionality */}
 
-        <div className="flex justify-center items-center gap-5">
+        <div className="flex flex-wrap justify-center items-center gap-5">
           <div className='bg-gray-100 border border-black rounded-full px-6'>
             <span>Where</span><br />
             <input
@@ -133,7 +134,7 @@ const FindFlat = () => {
      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
       {
         menus.map((flat,index)=>
-          <div key={index} className="px-4 py-8 shadow-lg max-w-[350px] font-sans rounded-xl space-y-6 my-20 mx-auto bg-white">
+          <div key={index} className="px-4 py-8 shadow-lg max-w-[350px] font-sans rounded-xl space-y-6 my-5 mx-auto bg-white">
           <div className="flex justify-center w-full h-48 lg:h-[280px] relative">
             <div className="flex justify-end items-center left-4 right-4 top-4 absolute">
               <div className="flex items-center">
@@ -160,6 +161,18 @@ const FindFlat = () => {
         )
       }
      </div>
+
+{/* for pagination */}
+
+    <div className=" flex flex-wrap justify-center mb-10 mt-24">
+      <button className="join-item btn btn-outline mr-2">&larr; Previous page</button>
+      <button className="join-item btn btn-outline mr-2">1</button>
+      <button className="join-item btn btn-outline mr-2">2</button>
+      <button className="join-item btn btn-outline mr-2">3</button>
+      <button className="mr-2">.....</button>
+      <button className="join-item btn btn-outline mr-2">23</button>
+      <button className="join-item btn btn-outline mr-2">Next &rarr;</button>
+    </div>
     </>
   )
 }
