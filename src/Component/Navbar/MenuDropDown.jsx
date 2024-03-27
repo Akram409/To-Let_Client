@@ -1,12 +1,11 @@
-import { useState } from "react";
-// import useAuth from "../../../hooks/useAuth";
+import { useContext, useState } from "react";
 import { AiOutlineMenu } from 'react-icons/ai'
 import avatarImg from "../../assets/placeholder.jpg"
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../Provider/AuthProvider";
 const MenuDropDown = () => {
     const [isOpen, setIsOpen] = useState(true)
-    const { user,logOut} = true;
-  
+    const { user,logOut} = useContext(AuthContext)
     return (
         <div className="relative">
             <div className="flex flex-row items-center gap-3">
@@ -52,7 +51,7 @@ const MenuDropDown = () => {
                 </Link>
                 <div
                  onClick={logOut} 
-                 className="px-4 py-3 hover:bg-neutral-100 bg-slate-400 transition font-semibold cursor-pointer">
+                 className="px-14 py-3 hover:bg-neutral-100 bg-slate-400 transition font-semibold cursor-pointer">
                     LogOut
                     </div>
                     </>

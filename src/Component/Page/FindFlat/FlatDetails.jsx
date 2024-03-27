@@ -1,6 +1,29 @@
-import { Link } from "react-router-dom"
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom"
 
 const FlatDetails = () => {
+
+    const [flatDetails, setFlatDetails] = useState([]);
+    const { id } = useParams();
+
+    useEffect(() => {
+        const getFlatDetails = async () => {
+            try {
+                const res = await axios.get(`http://localhost:5000/flatDetails/${id}`);
+                console.log(res.data);
+                setFlatDetails(res.data); 
+                // console.log("flatdata", res.data);
+            } catch (error) {
+                console.error("Error fetching flat details:", error);
+            }
+        };
+        getFlatDetails();
+    }, [id]);
+
+    // console.log("flatdata", flatDetails[0]?.flatList.description.type)
+
+
 
     const menus = [
 
@@ -71,7 +94,6 @@ const FlatDetails = () => {
                 </div>
             </div>
 
-
             {/* card details information  */}
             <div>
                 {/* details sections starts */}
@@ -82,20 +104,21 @@ const FlatDetails = () => {
                                 <div className="mb-16">
                                     <div className="mb-5">
                                         <h2 className="lg:text-xl font-medium text-black">
-                                            Home type: 2 bedroom Flat
+                                            Home type: {flatDetails[0]?.flatList.description.type}
 
                                         </h2>
                                         <p className="text-black  font-medium inline-block md:text-lg mt-1">
-                                            Location: Khilgaon, Dhaka
+                                            Location:{flatDetails[0]?.flatList?.description?.location?.address},
+                                            {flatDetails[0]?.flatList?.description?.location?.city}
                                         </p>
                                     </div>
                                     <div className="border-t-4 border-b-4">
                                         <h1 className="mt-8 lg:text-3xl  mb-[12px] font-semibold text-black"> Basic Information</h1>
                                         <ul className="mb-8 lg:text-xl  text-black">
-                                            <li> - Location: Location name</li>
-                                            <li>  - Bed: 1, 2, 3, 4, bed</li>
-                                            <li>- Bath: 1, 2, 3, 4, bath</li>
-                                            <li>  - Size: 1800 sqft</li>
+                                            <li> - Location: {flatDetails[0]?.flatList?.description?.location?.city}</li>
+                                            <li> - Bed: {flatDetails[0]?.flatList?.description?.bedroom} bedroom</li>
+                                            <li> - Bath: {flatDetails[0]?.flatList?.description?.bedroom} bedroom</li>
+                                            <li> - Size: {flatDetails[0]?.flatList?.description?.size} size</li>
                                         </ul>
 
                                     </div>
@@ -104,7 +127,7 @@ const FlatDetails = () => {
                                     <div className="relative h-full max-md:min-h-[350px] mt-16">
                                         <iframe src="https://maps.google.com/maps?q=Dhaka&t=&z=13&ie=UTF8&iwloc=&output=embed"
                                             className="left-0 top-0 h-full w-full rounded-t-lg lg:rounded-tr-none lg:rounded-bl-lg"
-                                            allowfullscreen></iframe>
+                                            allowFullScreen></iframe>
                                     </div>
                                 </div>
 
@@ -118,7 +141,7 @@ const FlatDetails = () => {
                                 className="h-auto p-5 md:w-[416px] max-w-[416px] mt-3 border-2 border-black rounded-lg" >
                                 <div>
                                     <div className="flex items-center justify-between">
-                                        <h2 className="text-3xl font-bold my-5">$15000</h2>
+                                        <h2 className="text-3xl font-bold my-5">$ N/A</h2>
                                         <svg width={30} className="hover:fill-red-500 hover:stroke-red-500 stroke-2 fill-transparent stroke-black " viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ cursor: 'pointer' }}><g strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M2 9.1371C2 14 6.01943 16.5914 8.96173 18.9109C10 19.7294 11 20.5 12 20.5C13 20.5 14 19.7294 15.0383 18.9109C17.9806 16.5914 22 14 22 9.1371C22 4.27416 16.4998 0.825464 12 5.50063C7.50016 0.825464 2 4.27416 2 9.1371Z"></path></g></svg>
                                     </div>
                                     <button
