@@ -1,8 +1,8 @@
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { Button, Form, Input, Upload, message } from "antd";
-import { useContext } from "react";
-import { useLocation, useNavigate, useNavigation } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { validateEmail } from "../../../lib/utils";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import axios from "axios";
@@ -12,32 +12,35 @@ import { UploadOutlined } from "@ant-design/icons";
 
 const SignUp = () => {
   const { googleSignIn, setUser } = useContext(AuthContext);
+  const [fileList, setFileList] = useState([]);
+  const [formData, setFormData] = useState({});
   const navigate = useNavigate(); // Import useNavigate hook to redirect after signup
-  const navigation = useNavigation();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
-  if (navigation.state === "loading") {
-    return <progress className="progress w-56"></progress>;
-  }
-
   const onFinish = async (values) => {
-    const userData = {
-      ...values,
+    setFormData({ ...formData, ...values });
+    const data = new FormData();
+    data.append("firstName", formData.firstName);
+    data.append("lastName", formData.lastName);
+    data.append("email", formData.email);
+    data.append("password", formData.password);
+    data.append("age", formData.age);
+    data.append("address", formData.address);
+    data.append("city", formData.city);
+    data.append("postalCode", formData.postalCode);
+
+    data.append("images", fileList[0].originFileObj);
+
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
     };
-    console.log("",userData)
-
+    const url = "http://localhost:5000/signup";
     try {
-      const response = await axios.post(
-        "http://localhost:5000/signup",
-        userData
-      );
-      console.log(response);
-
-      // Set the user in AuthContext after successful signup
+      const response = await axios.post(url, data, config);
       setUser(response.data.user);
-
-      // Display success message using Ant Design message component
       message.success("Signup successful");
       navigate("/login", { replace: true });
     } catch (error) {
@@ -52,11 +55,26 @@ const SignUp = () => {
   };
 
   const normFile = (e) => {
-    console.log("Upload event:", e);
+    setFileList(e.fileList);
+    console.log(e.fileList);
     if (Array.isArray(e)) {
       return e;
     }
     return e?.fileList;
+  };
+
+  const props = {
+    multiple: false,
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: () => {
+      return false;
+    },
+    fileList,
   };
 
   const handleGoogle = () => {
@@ -65,10 +83,9 @@ const SignUp = () => {
         const user = result.user;
         console.log(user);
 
-        const fullName = user.displayName.split(' ');
+        const fullName = user.displayName.split(" ");
         const firstName = fullName[0];
-        const lastName = fullName.slice(1).join(' ');
-
+        const lastName = fullName.slice(1).join(" ");
 
         console.log(user);
         const saveUser = {
@@ -79,10 +96,10 @@ const SignUp = () => {
           user_image: user?.photoURL,
           age: "",
           location: {
-            address:"" ,
+            address: "",
             city: "",
             postalCode: "",
-          }
+          },
         };
         console.log(saveUser);
         axios
@@ -203,8 +220,8 @@ const SignUp = () => {
                     </Form.Item>
                     <Form.Item
                       name="user_image"
-                      label="Image"
                       valuePropName="fileList"
+                      label="Image"
                       getValueFromEvent={normFile}
                       rules={[
                         {
@@ -217,12 +234,14 @@ const SignUp = () => {
                         name="logo"
                         action="/upload.do"
                         listType="picture"
+                        {...props}
                       >
                         <Button icon={<UploadOutlined />}>
                           Click to upload Image
                         </Button>
                       </Upload>
                     </Form.Item>
+
                     <Form.Item
                       label="Password"
                       name="password"
