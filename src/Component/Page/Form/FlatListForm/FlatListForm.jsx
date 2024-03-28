@@ -1,48 +1,127 @@
-import { DatePicker, InputNumber, Radio, Tabs, Upload, message } from "antd";
-// import { Form } from "react-router-dom";
-const { TabPane } = Tabs;
-import { Form } from "antd";
-import TextArea from "antd/es/input/TextArea";
-import { useState } from "react";
-import { BsBox, BsBuildings } from "react-icons/bs";
 import { InboxOutlined } from "@ant-design/icons";
+import {
+  DatePicker,
+  Form,
+  InputNumber,
+  Radio,
+  Tabs,
+  Upload,
+  message,
+} from "antd";
+import TextArea from "antd/es/input/TextArea";
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { BsBox, BsBuildings } from "react-icons/bs";
+import { AuthContext } from "../../../../Provider/AuthProvider";
+
+const { TabPane } = Tabs;
 
 const FlatListForm = () => {
+  const { user } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState("");
   const [formData, setFormData] = useState({});
   const [activeTab, setActiveTab] = useState("1");
+  const [fileList, setFileList] = useState([]);
+  const [userData,setUserData] = useState();
 
+  useEffect(() => {
+    // Fetch user data based on email
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/user/${user?.email}`
+        );
+        if (response.data.user) {
+          // console.log(response.data.user)
+          // Add userEmail and userId to formData state
+         setUserData(response.data.user)
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [user?.email,formData]);
+
+  console.log(userData)
   const dateChange = (date, dateString) => {
     setSelectedDate(dateString);
   };
-
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     if (selectedDate) {
       values.availableFrom = selectedDate;
     }
+
     setFormData({ ...formData, ...values });
+    const data = new FormData();
+    data.append("type", formData.type);
+    data.append("availableFrom", formData.availableFrom);
+    data.append("bedroom", formData.bedroom);
+    data.append("bathroom", formData.bathroom);
+    data.append("size", formData.size);
+    data.append("address", formData.address);
+    data.append("city", formData.city);
+    data.append("postalCode", formData.postalCode);
+    data.append("phone", values.phone);
+    data.append("firstName", values.firstName);
+    data.append("lastName", values.lastName);
+    data.append("userCity", values.userCity);
+    data.append("userPostalCode", values.userPostalCode);
 
-    // Move to the next tab after submitting
-    const nextTab = (parseInt(activeTab) + 1).toString();
-    setActiveTab(nextTab);
+    fileList.forEach((file) => {
+      data.append("images", file.originFileObj);
+    });
 
-    // Check if the active tab is "5", then show success message and reset to tab "1"
-    if (nextTab === "4") {
-      message.success("Form submitted successfully!");
-      setActiveTab("1");
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+    const url = "http://localhost:5000/add/flatList";
+    try {
+      const nextTab = (parseInt(activeTab) + 1).toString();
+      
+      if (nextTab === "4") {
+        data.append("userEmail", userData?.email);
+        data.append("userId", userData?._id);
+        await axios.post(url, data, config);
+        message.success("Form submitted successfully!");
+        setActiveTab("1");
+      }
+      else{
+        setActiveTab(nextTab);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
-  console.log("Success:", formData);
+  // console.log(formData)
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
   const normFile = (e) => {
-    console.log("Upload event:", e.fileList);
+    setFileList(e.fileList);
     if (Array.isArray(e)) {
       return e;
     }
     return e?.fileList;
   };
+
+  const props = {
+    multiple: true,
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: () => {
+      return false;
+    },
+    fileList,
+  };
+
   return (
     <div>
       <Tabs activeKey={activeTab} onChange={setActiveTab} centered>
@@ -292,11 +371,7 @@ const FlatListForm = () => {
                       getValueFromEvent={normFile}
                       noStyle
                     >
-                      <Upload.Dragger
-                        name="files"
-                        action="/upload.do"
-                        multiple={true}
-                      >
+                      <Upload.Dragger {...props}>
                         <p className="ant-upload-drag-icon">
                           <InboxOutlined />
                         </p>
@@ -374,7 +449,7 @@ const FlatListForm = () => {
                     />
                   </Form.Item>
                 </div>
-                <Form.Item name="Phone" className="w-full">
+                <Form.Item name="phone" className="w-full">
                   <TextArea
                     name="Phone"
                     placeholder="Phone Number"
