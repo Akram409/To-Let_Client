@@ -8,6 +8,8 @@ import FlatDetails from "../Page/FindFlat/FlatDetails";
 import RoommateDetails from "../Page/FindRoommate/RoommateDetails";
 import FlatListForm from "../Page/Form/FlatListForm/FlatListForm";
 import RoommateListForm from "../Page/Form/RoommateListForm/RoommateListForm";
+import Wishlist from "../Page/Wishlist/Wishlist";
+import MyAccount from "../Page/MyAcount/MyAccount";
 // import Profile from "../Share/Profile/Profile";
 // import PrivateRouter from "./PrivateRouter";
 
@@ -56,6 +58,14 @@ export const router = createBrowserRouter([
       {
         path:"/createRoommateList",
         element:<RoommateListForm/>
+      },
+      {
+        path:"/wishlist",
+        element:<Wishlist/>
+      },
+      {
+        path:"/myAccount",
+        element:<MyAccount/>
       }
     ],
   },

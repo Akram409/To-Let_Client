@@ -20,7 +20,7 @@ const Login = () => {
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/user");
+        const response = await axios.get("http://localhost:5000/users");
         setAllUser(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -54,18 +54,30 @@ const Login = () => {
 
   const handleGoogle = () => {
     googleSignIn()
-      .then((result) => {
-        const user = result.user;
-        console.log(user);
-        const saveUser = {
-          username: user.displayName,
-          email: user.email,
-          password: "",
-          user_image: user?.photoURL,
-          age: "",
-          lastOnline: "",
-          onlineStatus: "",
-        };
+    .then((result) => {
+      const user = result.user;
+      console.log(user);
+
+      const fullName = user.displayName.split(' ');
+      const firstName = fullName[0];
+      const lastName = fullName.slice(1).join(' ');
+
+
+      console.log(user);
+      const saveUser = {
+        firstName: firstName,
+        lastName: lastName,
+        email: user.email,
+        password: "",
+        user_image: user?.photoURL,
+        age: "",
+        location: {
+          address:"" ,
+          city: "",
+          postalCode: "",
+        }
+      };
+      console.log(saveUser);
 
         axios
           .post("http://localhost:5001/user", saveUser, {
