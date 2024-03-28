@@ -25,11 +25,11 @@ const SignUp = () => {
     const userData = {
       ...values,
     };
-    console.log(values)
+    console.log("",userData)
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/signup",
+        "http://localhost:5000/signup",
         userData
       );
       console.log(response);
@@ -64,16 +64,27 @@ const SignUp = () => {
       .then((result) => {
         const user = result.user;
         console.log(user);
+
+        const fullName = user.displayName.split(' ');
+        const firstName = fullName[0];
+        const lastName = fullName.slice(1).join(' ');
+
+
+        console.log(user);
         const saveUser = {
-          username: user.displayName,
+          firstName: firstName,
+          lastName: lastName,
           email: user.email,
           password: "",
           user_image: user?.photoURL,
           age: "",
-          lastOnline: "",
-          onlineStatus: "",
+          location: {
+            address:"" ,
+            city: "",
+            postalCode: "",
+          }
         };
-
+        console.log(saveUser);
         axios
           .post("http://localhost:5000/user", saveUser, {
             headers: {
@@ -94,7 +105,7 @@ const SignUp = () => {
   };
   return (
     <div className="w-full">
-      <div className="flex justify-center justify-items-center items-center">
+      <div className="flex  justify-center justify-items-center items-center">
         <div className="card w-96 border border-black shadow-2xl">
           <div className="card-body">
             <div className="flex flex-col w-auto border-opacity-50 ">
@@ -136,8 +147,8 @@ const SignUp = () => {
                     autoComplete="off"
                   >
                     <Form.Item
-                      label="Username"
-                      name="username"
+                      label="First Name"
+                      name="firstName"
                       className="mb-4"
                       rules={[
                         {
@@ -146,7 +157,20 @@ const SignUp = () => {
                         },
                       ]}
                     >
-                      <Input placeholder="Enter your username" />
+                      <Input placeholder="Enter your FirstName" />
+                    </Form.Item>
+                    <Form.Item
+                      label="Last Name"
+                      name="lastName"
+                      className="mb-4"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your username!",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Enter your FirstName" />
                     </Form.Item>
                     <Form.Item
                       label="Email"
@@ -212,7 +236,45 @@ const SignUp = () => {
                     >
                       <Input.Password placeholder="Enter your password" />
                     </Form.Item>
-
+                    <Form.Item
+                      label="Address"
+                      name="address"
+                      className="mb-5 "
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your location!",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Enter your location" />
+                    </Form.Item>
+                    <Form.Item
+                      label="City"
+                      name="city"
+                      className="mb-5 "
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your city!",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Enter your city" />
+                    </Form.Item>
+                    <Form.Item
+                      label="Postal Code"
+                      name="postalCode"
+                      className="mb-5 "
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your postal code!",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Enter your postal code" />
+                    </Form.Item>
                     <Form.Item
                       wrapperCol={{
                         offset: 0,
