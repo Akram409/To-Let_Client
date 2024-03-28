@@ -49,8 +49,8 @@ const MyAccount = () => {
       
         const nonEmptyValues = Object.fromEntries(Object.entries(values).filter(([key, value]) => value !== ''));
     
+        
         const userData = { ...updateProfiles };
-    
         Object.keys(nonEmptyValues).forEach(key => {
             if (key === 'address' || key === 'city' || key === 'postalCode') {
                 userData.location = { ...userData.location, [key]: nonEmptyValues[key] };
@@ -59,15 +59,22 @@ const MyAccount = () => {
             }
         });
     
-        console.log("Form Data:", userData);
-    
+        
+        
         try {
-            const id = updateProfiles?._id;
-            console.log(id);
-            const response = await axios.patch(`http://localhost:5000/user/${id}`, userData);
-            console.log("Response:", response);
-    
-            message.success("Update successful");
+            const email = updateProfiles?.email;
+ 
+           console.log("Form Data:", userData);
+            console.log("iddddddddddd",email);
+
+            const response = await axios.patch(`http://localhost:5000/update/${email}`, userData);
+            if (response.data.message === 'User updated successfully') {
+                message.success("Update successful");
+
+            }
+
+            console.log("Response:", response.data);
+
         } catch (error) {
             console.error("Update failed:", error?.response?.data?.error);
             message.error("Failed to update. Please try again later.");
