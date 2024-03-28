@@ -46,10 +46,10 @@ const MyAccount = () => {
     console.log("updateProfiles", updateProfiles);
 
     const onFinish = async (values) => {
-      
+
         const nonEmptyValues = Object.fromEntries(Object.entries(values).filter(([key, value]) => value !== ''));
-    
-        
+
+
         const userData = { ...updateProfiles };
         Object.keys(nonEmptyValues).forEach(key => {
             if (key === 'address' || key === 'city' || key === 'postalCode') {
@@ -58,14 +58,11 @@ const MyAccount = () => {
                 userData[key] = nonEmptyValues[key];
             }
         });
-    
-        
-        
+
         try {
             const email = updateProfiles?.email;
- 
-           console.log("Form Data:", userData);
-            console.log("iddddddddddd",email);
+
+            console.log("Form Data:", userData);
 
             const response = await axios.patch(`http://localhost:5000/update/${email}`, userData);
             if (response.data.message === 'User updated successfully') {
@@ -142,12 +139,13 @@ const MyAccount = () => {
                                                         span: 16,
                                                     }}
                                                     initialValues={{
-                                                        firstName: updateProfiles?updateProfiles?.firstName : '',
-                                                        lastName: updateProfiles?updateProfiles?.lastName : '',
-                                                        age: updateProfiles?updateProfiles?.age :'',
-                                                        address: updateProfiles?updateProfiles?.location?.address : '',
-                                                        city: updateProfiles?updateProfiles?.location?.city  : '',
-                                                        postalCode: updateProfiles?updateProfiles?.location?.postalCode : '',
+                                                        firstName: updateProfiles ? updateProfiles?.firstName : '',
+                                                        lastName: updateProfiles ? updateProfiles?.lastName : '',
+                                                        age: updateProfiles ? updateProfiles?.age : '',
+                                                        address: updateProfiles ? updateProfiles?.location?.address : '',
+                                                        city: updateProfiles ? updateProfiles?.location?.city : '',
+                                                        postalCode: updateProfiles ? updateProfiles?.location?.postalCode : '',
+                                                        password: updateProfiles ? updateProfiles?.password : '',
                                                     }}
                                                     onFinish={onFinish}
                                                     onFinishFailed={onFinishFailed}
@@ -158,7 +156,7 @@ const MyAccount = () => {
                                                         name="firstName"
                                                         className="mb-4"
                                                         initialValue={updateProfiles ? updateProfiles?.firstName : ''}
-                                                       
+
                                                     >
                                                         <Input placeholder={updateProfiles ? updateProfiles?.firstName : ''} />
                                                     </Form.Item>
@@ -167,7 +165,7 @@ const MyAccount = () => {
                                                         name="lastName"
                                                         className="mb-4"
                                                         initialValue={updateProfiles ? updateProfiles?.lastName : ''}
-                                                       
+
                                                     >
                                                         <Input placeholder={updateProfiles ? updateProfiles?.lastName : ''} />
                                                     </Form.Item>
@@ -176,16 +174,16 @@ const MyAccount = () => {
                                                         name="age"
                                                         label="Age"
                                                         initialValue={updateProfiles ? updateProfiles?.age : ''}
-                                                       
+
                                                     >
-                                                        <Input placeholder={updateProfiles ? updateProfiles?.age : ''}/>
+                                                        <Input placeholder={updateProfiles ? updateProfiles?.age : ''} />
                                                     </Form.Item>
                                                     <Form.Item
                                                         name="user_image"
                                                         label="Image"
                                                         valuePropName="fileList"
                                                         getValueFromEvent={normFile}
-                                                        
+
                                                     >
                                                         <Upload
                                                             name="logo"
@@ -202,28 +200,37 @@ const MyAccount = () => {
                                                         label="Address"
                                                         name="address"
                                                         className="mb-5 "
-                                                        initialValues={updateProfiles?updateProfiles?.location?.address : ''}
-                                                       
+                                                        initialValues={updateProfiles ? updateProfiles?.location?.address : ''}
+
                                                     >
-                                                        <Input placeholder={updateProfiles?updateProfiles?.location?.address : ''} />
+                                                        <Input placeholder={updateProfiles ? updateProfiles?.location?.address : ''} />
                                                     </Form.Item>
                                                     <Form.Item
                                                         label="City"
                                                         name="city"
                                                         className="mb-5 "
-                                                        initialValues={updateProfiles?updateProfiles?.location?.city : ''}
-                                                       
+                                                        initialValues={updateProfiles ? updateProfiles?.location?.city : ''}
+
                                                     >
-                                                        <Input placeholder={updateProfiles?updateProfiles?.location?.city : ''} />
+                                                        <Input placeholder={updateProfiles ? updateProfiles?.location?.city : ''} />
                                                     </Form.Item>
                                                     <Form.Item
                                                         label="Postal Code"
                                                         name="postalCode"
                                                         className="mb-5 "
-                                                        initialValues={updateProfiles?updateProfiles?.location?.postalCode : ''}
+                                                        initialValues={updateProfiles ? updateProfiles?.location?.postalCode : ''}
+
+                                                    >
+                                                        <Input placeholder={updateProfiles ? updateProfiles?.location?.postalCode : ''} />
+                                                    </Form.Item>
+                                                    <Form.Item
+                                                        label="Password"
+                                                        name="password"
+                                                        className="mb-5 "
+                                                        initialValues={updateProfiles ? updateProfiles?.password : ''}
                                                         
                                                     >
-                                                        <Input placeholder={updateProfiles?updateProfiles?.location?.postalCode : ''} />
+                                                        <Input.Password placeholder={updateProfiles ? updateProfiles?.password : ''} />
                                                     </Form.Item>
                                                     <Form.Item
                                                         wrapperCol={{
@@ -243,9 +250,6 @@ const MyAccount = () => {
                                         </div>
                                     </div>
                                 </div>
-
-
-
                             </div>
                         </div>
                     </div>
