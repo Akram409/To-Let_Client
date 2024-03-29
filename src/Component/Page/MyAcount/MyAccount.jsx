@@ -9,7 +9,8 @@ import { UploadOutlined } from "@ant-design/icons";
 const MyAccount = () => {
   const [openModal, setOpenModal] = useState(false);
   const { user } = useContext(AuthContext);
-  console.log(user)
+  console.log("userData",user);
+
   const [profile, setProfile] = useState([]);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ const MyAccount = () => {
         const res = await axios.get(
           `http://localhost:5000/user/${user?.email}`
         );
-        console.log("sdfhdsj",res);
+        // console.log(res.data);
         setProfile(res.data);
         // console.log("flatdata", res.data);
       } catch (error) {
@@ -28,26 +29,25 @@ const MyAccount = () => {
     getProfile();
   }, [user?.email]);
 
-  console.log("profilettttttt", profile?.user);
+  // console.log("profilettttttt", profile?.user);
 
-  const [updateProfiles, setUpdateProfiles] = useState("");
+  const [updateProfiles, setUpdateProfiles] = useState(null);
 
   const editData = (_id, editData) => {
-    console.log("ttttttttttttt", _id);
-    console.log("ttttttttttttt", editData);
+    // console.log("ttttttttttttt", _id);
+    // console.log("ttttttttttttt", editData);
     setUpdateProfiles(editData);
     setOpenModal(true);
   };
 
-  console.log("updateProfiles", updateProfiles);
+  // console.log("updateProfiles", updateProfiles);
 
   const onFinish = async (values) => {
     const nonEmptyValues = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== "")
+      Object.entries(values).filter(([value]) => value !== "")
     );
 
     const userData = { ...updateProfiles };
-
     Object.keys(nonEmptyValues).forEach((key) => {
       if (key === "address" || key === "city" || key === "postalCode") {
         userData.location = {
@@ -59,18 +59,17 @@ const MyAccount = () => {
       }
     });
 
-    console.log("Form Data:", userData);
-
     try {
-      const id = updateProfiles?._id;
-      console.log(id);
+
       const response = await axios.patch(
-        `http://localhost:5000/user/${id}`,
+        `http://localhost:5000/update/${user?.user?.email}`,
         userData
       );
-      console.log("Response:", response);
+      if (response.data.message === "User updated successfully") {
+        message.success("Update successful");
+      }
 
-      message.success("Update successful");
+      console.log("Response:", response.data);
     } catch (error) {
       console.error("Update failed:", error?.response?.data?.error);
       message.error("Failed to update. Please try again later.");
@@ -96,36 +95,36 @@ const MyAccount = () => {
             <div className="">
               <img
                 alt="profile"
-                src={profile?.user?.user_image}
-                className="mx-auto object-cover rounded-full h-32 w-32  border-2 border-white "
+                src={`http://localhost:5000/image/${user?.user?.user_image}`}
+                className="mx-auto object-cover rounded-full h-32 w-32  border-4 border-black  "
               />
             </div>
             <div className="w-[400px] p-2 mt-6 rounded-lg">
               <div className="flex flex-wrap justify-between text-sm text-gray-600 ">
                 <div className="flex-1">
                   <p className="flex mr-3 text-lg">
-                    First Name : {profile?.user?.firstName}
+                    First Name : {user?.user?.firstName}
                   </p>
                   <p className="flex flex-col mt-3 text-lg">
-                    Last Name : {profile?.user?.lastName}
+                    Last Name : {user?.user?.lastName}
                   </p>
                   <p className="flex flex-col mt-3 text-lg">
-                    Age:{profile?.user?.age}
+                    Age:{user?.user?.age}
                   </p>
 
                   <p className="flex flex-col mt-3 text-lg">
-                    Address: {profile?.user?.location.address}
+                    Address: {user?.user?.location.address}{" "}
                   </p>
                   <p className="flex flex-col mt-3 text-lg">
-                    City: {profile?.user?.location.city}
+                    City: {user?.user?.location.city}
                   </p>
                   <p className="flex flex-col mt-3 text-lg mb-5">
-                    Postal code: {profile?.user?.location.postalCode}
+                    Postal code: {user?.user?.location.postalCode}
                   </p>
                   <div className="w-72 mx-auto flex items-center justify-center">
                     <button
                       onClick={() =>
-                        editData(profile?.user?._id, profile?.user)
+                        editData(user?.user?._id, profile?.user)
                       }
                       className="bg-green-500 px-12 py-3 text-white p-2 rounded-lg"
                     >
@@ -316,7 +315,7 @@ const MyAccount = () => {
                               className="btn btn-wide border-2 border-black btn-accent"
                               type="submit"
                             >
-                              SignUp with Email
+                              Update Profile
                             </button>
                           </Form.Item>
                         </Form>

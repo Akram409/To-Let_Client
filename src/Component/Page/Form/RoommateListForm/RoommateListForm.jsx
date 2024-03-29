@@ -2,57 +2,105 @@ import { DatePicker, InputNumber, Radio, Tabs, Upload, message } from "antd";
 const { TabPane } = Tabs;
 import { Form } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
+import { AuthContext } from "../../../../Provider/AuthProvider";
+import axios from "axios";
 
 const RoommateListForm = () => {
-  const [form] = Form.useForm();
+  const { user } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState("");
   const [formData, setFormData] = useState({});
   const [activeTab, setActiveTab] = useState("1");
+  const [fileList, setFileList] = useState([]);
+
 
   const dateChange = (date, dateString) => {
     setSelectedDate(dateString);
   };
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     if (selectedDate) {
       values.availableFrom = selectedDate;
     }
     setFormData({ ...formData, ...values });
+    const data = new FormData();
+    data.append("bedroomType", formData.type);
+    data.append("bathroom", formData.bathroom);
+    data.append("size", formData.size);
+    data.append("rent", formData.rent);
+    data.append("availableFrom", formData.availableFrom);
+    data.append("address", formData.address);
+    data.append("city", formData.city);
+    data.append("postalCode", formData.postalCode);
 
-    // Move to the next tab after submitting
-    const nextTab = (parseInt(activeTab) + 1).toString();
-    setActiveTab(nextTab);
-    form.resetFields();
+    data.append("gender", formData.gender);
+    data.append("pets", formData.pets);
+    data.append("smoking", formData.smoking);
+    data.append("employmentStatus", formData.employmentStatus);
 
-    // Check if the active tab is "5", then show success message and reset to tab "1"
-    if (nextTab === "5") {
-      message.success("Form submitted successfully!");
-      setActiveTab("1");
+    data.append("userGender", values.userGender);
+    data.append("firstName", values.firstName);
+    data.append("lastName", values.lastName);
+    data.append("Phone", values.Phone);
+    data.append("userEmploymentStatus", values.userEmploymentStatus);
+
+    fileList.forEach((file) => {
+      data.append("images", file.originFileObj);
+    });
+
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+    const url = "http://localhost:5000/add/roommateList";
+
+    try {
+      const nextTab = (parseInt(activeTab) + 1).toString();
+      if (nextTab === "5") {
+        data.append("userEmail", user?.user?.email);
+        data.append("userId", user?.user?._id);
+        await axios.post(url, data, config);
+        message.success("Form submitted successfully!");
+        setActiveTab("1");
+      } else {
+        setActiveTab(nextTab);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  console.log("Success:", formData);
+  // console.log("Success:", formData);
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
   const normFile = (e) => {
-    console.log("Upload event:", e.fileList);
+    setFileList(e.fileList);
     if (Array.isArray(e)) {
       return e;
     }
     return e?.fileList;
   };
+
+  const props = {
+    multiple: true,
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: () => {
+      return false;
+    },
+    fileList,
+  };
   return (
     <div>
-      <Tabs
-        // defaultActiveKey="1"
-        centered
-        activeKey={activeTab}
-        onChange={setActiveTab}
-      >
+      <Tabs centered activeKey={activeTab} onChange={setActiveTab}>
         <TabPane tab="DESCRIPTION" key="1" className="w-full">
           <div className="w-full flex justify-center mt-10">
             <Form
@@ -157,7 +205,19 @@ const RoommateListForm = () => {
                   </Form.Item>
                 </Form.Item>
               </div>
-
+              
+              <div>
+                <h1 className="font-bold text-2xl mb-2">Rent</h1>
+                <Form.Item>
+                  <Form.Item name="rent">
+                    <InputNumber
+                      min={1}
+                      className="border-2 border-black w-1/3 text-lg "
+                    />
+                  </Form.Item>
+                </Form.Item>
+              </div>
+              
               <div>
                 <h1 className="font-bold text-2xl mb-5">Location</h1>
                 <div className="flex items-center gap-3 font-semibold">
@@ -367,11 +427,7 @@ const RoommateListForm = () => {
                       getValueFromEvent={normFile}
                       noStyle
                     >
-                      <Upload.Dragger
-                        name="files"
-                        action="/upload.do"
-                        multiple={true}
-                      >
+                      <Upload.Dragger {...props}>
                         <p className="ant-upload-drag-icon">
                           <InboxOutlined />
                         </p>

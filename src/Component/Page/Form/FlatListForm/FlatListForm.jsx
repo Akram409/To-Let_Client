@@ -22,29 +22,8 @@ const FlatListForm = () => {
   const [formData, setFormData] = useState({});
   const [activeTab, setActiveTab] = useState("1");
   const [fileList, setFileList] = useState([]);
-  const [userData,setUserData] = useState();
 
-  useEffect(() => {
-    // Fetch user data based on email
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:5000/user/${user?.email}`
-        );
-        if (response.data.user) {
-          // console.log(response.data.user)
-          // Add userEmail and userId to formData state
-         setUserData(response.data.user)
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, [user?.email,formData]);
-
-  console.log(userData)
+  // console.log(userData)
   const dateChange = (date, dateString) => {
     setSelectedDate(dateString);
   };
@@ -60,6 +39,7 @@ const FlatListForm = () => {
     data.append("bedroom", formData.bedroom);
     data.append("bathroom", formData.bathroom);
     data.append("size", formData.size);
+    data.append("rent", formData.rent);
     data.append("address", formData.address);
     data.append("city", formData.city);
     data.append("postalCode", formData.postalCode);
@@ -81,15 +61,14 @@ const FlatListForm = () => {
     const url = "http://localhost:5000/add/flatList";
     try {
       const nextTab = (parseInt(activeTab) + 1).toString();
-      
+
       if (nextTab === "4") {
-        data.append("userEmail", userData?.email);
-        data.append("userId", userData?._id);
+        data.append("userEmail", user?.user?.email);
+        data.append("userId", user?.user?._id);
         await axios.post(url, data, config);
         message.success("Form submitted successfully!");
         setActiveTab("1");
-      }
-      else{
+      } else {
         setActiveTab(nextTab);
       }
     } catch (error) {
@@ -281,7 +260,7 @@ const FlatListForm = () => {
               </div>
 
               <div>
-                <h1 className="font-bold text-2xl mb-5">Size (sqft)</h1>
+                <h1 className="font-bold text-2xl mb-2">Size (sqft)</h1>
                 <Form.Item>
                   <Form.Item name="size">
                     <InputNumber
@@ -293,6 +272,17 @@ const FlatListForm = () => {
                 </Form.Item>
               </div>
 
+              <div>
+                <h1 className="font-bold text-2xl mb-2">Rent</h1>
+                <Form.Item>
+                  <Form.Item name="rent">
+                    <InputNumber
+                      min={1}
+                      className="border-2 border-black w-1/3 text-lg "
+                    />
+                  </Form.Item>
+                </Form.Item>
+              </div>
               <div>
                 <h1 className="font-bold text-2xl mb-5">Location</h1>
                 <div className="flex items-center gap-3 font-semibold">
