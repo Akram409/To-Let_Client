@@ -66,7 +66,8 @@ const AuthProvider = ({ children }) => {
 			const response = await axios.post("http://localhost:5000/login", { email, password });
 			const { token } = response.data;
 			// Store token in local storage
-			localStorage.setItem("access-token", token);
+			console.log(response.data);
+			localStorage.setItem("token", token);
 			setUser({ token });
 		} catch (error) {
 			console.error("Login failed:", error);
