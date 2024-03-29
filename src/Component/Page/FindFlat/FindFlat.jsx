@@ -6,23 +6,48 @@ const FindFlat = () => {
 
   const [flatData, setFlatData] = useState([])
   const [activeButton, setActiveButton] = useState('sublet');
-
+  const [searchValue, setSearchValue] = useState("");
+  const [priceSort, setPriceSort] = useState("");
   const handleClick = (button) => {
     setActiveButton(button);
   };
 
   useEffect(() => {
     const getAllCat = async () => {
-      const res = await axios.get('http://localhost:5000/flatList');
+      const res = await axios.get(`http://localhost:5000/flatList?search=${searchValue}&sort=${priceSort}`);
       setFlatData(res.data)
     }
     getAllCat();
-  }, [])
+  }, [searchValue, priceSort])
 
   // console.log("flatdata", flatData);
 
+  //search
+
+  const handleSearchChange = (e) => {
+    setSearchValue(e.target.value);
+  };
+
+  const handlePriceSortChange = (e) => {
+    setPriceSort(e.target.value);
+  };
 
 
+
+
+  // add To flat Wishlist-----------------------
+
+  const addToWishlist = async (flat) => {
+    console.log(flat);
+    try {
+
+      await axios.post(`http://localhost:5000/wishlist`, { flat });
+      console.log('Added to wishlist:', flat);
+
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+    }
+  };
 
 
   return (
@@ -55,14 +80,15 @@ const FindFlat = () => {
           <div className='bg-gray-100 border border-black rounded-full px-6'>
             <span>Where</span><br />
             <input
-
+              value={searchValue}
+              onChange={handleSearchChange}
               className="bg-gray-100"
               placeholder="Search Location"
             />
           </div>
 
           <select
-
+            
             defaultValue={"bold"}
             className="select select-bordered border border-gray-800 bg-gray-100 px-4 py-3 lg:w-auto w-[20vw] font-bold border-main focus:border-main rounded-full  join-item"
           >
@@ -74,22 +100,8 @@ const FindFlat = () => {
           </select>
 
           <select
-
-            defaultValue={"bold"}
-            className="select select-bordered  border border-gray-800 bg-gray-100 px-10 py-2 lg:w-auto w-[20vw] font-bold border-main focus:border-main rounded-full  join-item"
-          >
-            <option className="font-bold " value="bold" disabled>
-              Others
-            </option>
-            <option>2</option>
-            <option>4</option>
-            <option>6</option>
-            <option>8</option>
-            <option>10</option>
-          </select>
-
-          <select
-
+            value={priceSort}
+            onChange={handlePriceSortChange}
             defaultValue={"bold"}
             className="select select-bordered border border-gray-800 bg-gray-100 px-4 py-2 lg:w-auto w-[20vw] font-bold border-main focus:border-main rounded-full  join-item"
           >
@@ -113,13 +125,13 @@ const FindFlat = () => {
               <div className="px-4 py-8 shadow-lg max-w-[350px] font-sans rounded-xl space-y-6 my-5 mx-auto bg-white border-black border-2">
                 <div className="flex justify-center w-full h-48 lg:h-[280px] relative">
                   <div className="flex justify-end items-center left-4 right-4 top-4 absolute">
-                    <div className="flex items-center">
+                    <button className="flex items-center" onClick={() => addToWishlist(flat)}>
                       <svg width={30} className="hover:fill-red-500 hover:stroke-red-500 stroke-2 fill-transparent stroke-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ cursor: 'pointer' }}>
                         <g strokeWidth="0"></g>
                         <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
                         <g id="SVGRepo_iconCarrier"><path d="M2 9.1371C2 14 6.01943 16.5914 8.96173 18.9109C10 19.7294 11 20.5 12 20.5C13 20.5 14 19.7294 15.0383 18.9109C17.9806 16.5914 22 14 22 9.1371C22 4.27416 16.4998 0.825464 12 5.50063C7.50016 0.825464 2 4.27416 2 9.1371Z"></path></g>
                       </svg>
-                    </div>
+                    </button>
                   </div>
                   <img className="rounded-lg bg-black/40 w-full h-full" src={flat.flatList.images[0]} alt="card navigate ui" />
                 </div>
