@@ -11,20 +11,19 @@ import house2 from "../../../assets/signup.json";
 import { UploadOutlined } from "@ant-design/icons";
 
 const SignUp = () => {
-  const { googleSignIn, setUser } = useContext(AuthContext);
+  const { googleSignIn, setUser, facebookSignIn } = useContext(AuthContext);
   const navigate = useNavigate(); // Import useNavigate hook to redirect after signup
   const navigation = useNavigation();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
   const [fileList, setFileList] = useState([]);
 
-
   if (navigation.state === "loading") {
     return <progress className="progress w-56"></progress>;
   }
 
   const onFinish = async (values) => {
-    console.log(values)
+    console.log(values);
     const data = new FormData();
     data.append("firstName", values.firstName);
     data.append("lastName", values.lastName);
@@ -124,6 +123,49 @@ const SignUp = () => {
         console.error("Google sign-in error:", error.message);
       });
   };
+  const handleFB = () => {
+    facebookSignIn()
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+
+        const fullName = user.displayName.split(" ");
+        const firstName = fullName[0];
+        const lastName = fullName.slice(1).join(" ");
+
+        console.log(user);
+        const saveUser = {
+          firstName: firstName,
+          lastName: lastName,
+          email: user.email,
+          password: "",
+          user_image: user?.photoURL,
+          age: "",
+          location: {
+            address: "",
+            city: "",
+            postalCode: "",
+          },
+        };
+        console.log(saveUser);
+        axios
+          .post("http://localhost:5000/user", saveUser, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then(() => {
+            message.success("Login successful"); // Display success message
+            navigate(from, { replace: true });
+          })
+          .catch((error) => {
+            console.error("Error posting user data:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Google sign-in error:", error.message);
+      });
+  };
   return (
     <div className="w-full">
       <div className="flex  justify-center justify-items-center items-center">
@@ -132,7 +174,10 @@ const SignUp = () => {
             <div className="flex flex-col w-auto border-opacity-50 ">
               <div className="grid card rounded-box place-items-center">
                 <div className="flex flex-col gap-2">
-                  <button className="btn border-black btn-wide bg-[#1877F2]">
+                  <button
+                    className="btn border-black btn-wide bg-[#1877F2]"
+                    onClick={handleFB}
+                  >
                     <FaFacebook size="2em" color="white" />{" "}
                     <span className="text-white font-bold">
                       Continue With Facebook

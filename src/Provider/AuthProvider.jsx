@@ -5,6 +5,7 @@ import {
   onAuthStateChanged,
   signInWithPopup,
   signOut,
+  FacebookAuthProvider,
 } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { app } from "../firebase/firebase.config";
@@ -13,6 +14,7 @@ export const AuthContext = createContext(null);
 
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+const FBprovider = new FacebookAuthProvider();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -25,6 +27,10 @@ const AuthProvider = ({ children }) => {
     );
   };
 
+  const facebookSignIn = () => {
+    setLoading(true);
+    return signInWithPopup(auth, FBprovider).finally(() => setLoading(false));
+  };
   const verifyToken = async () => {
     try {
       const token = localStorage.getItem("access-token");
@@ -35,8 +41,7 @@ const AuthProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        if(response)
-        {
+        if (response) {
           setUser(response.data);
         }
       }
@@ -80,9 +85,8 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if(currentUser)
-      {
-        console.log("google",currentUser)
+      if (currentUser) {
+        console.log("google", currentUser);
         setUser(currentUser);
       }
     });
@@ -96,6 +100,7 @@ const AuthProvider = ({ children }) => {
     loading,
     logOut,
     googleSignIn,
+    facebookSignIn,
   };
 
   return (
