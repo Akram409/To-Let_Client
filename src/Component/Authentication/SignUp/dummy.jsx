@@ -2,7 +2,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { Button, Form, Input, Upload, message } from "antd";
 import { useContext, useState } from "react";
-import { useLocation, useNavigate, useNavigation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { validateEmail } from "../../../lib/utils";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import axios from "axios";
@@ -12,28 +12,24 @@ import { UploadOutlined } from "@ant-design/icons";
 
 const SignUp = () => {
   const { googleSignIn, setUser } = useContext(AuthContext);
+  const [fileList, setFileList] = useState([]);
+  const [formData, setFormData] = useState({});
   const navigate = useNavigate(); // Import useNavigate hook to redirect after signup
-  const navigation = useNavigation();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  const [fileList, setFileList] = useState([]);
-
-
-  if (navigation.state === "loading") {
-    return <progress className="progress w-56"></progress>;
-  }
 
   const onFinish = async (values) => {
-    console.log(values)
+    setFormData({ ...formData, ...values });
     const data = new FormData();
-    data.append("firstName", values.firstName);
-    data.append("lastName", values.lastName);
-    data.append("email", values.email);
-    data.append("password", values.password);
-    data.append("age", values.age);
-    data.append("address", values.address);
-    data.append("city", values.city);
-    data.append("postalCode", values.postalCode);
+    data.append("firstName", formData.firstName);
+    data.append("lastName", formData.lastName);
+    data.append("email", formData.email);
+    data.append("password", formData.password);
+    data.append("age", formData.age);
+    data.append("address", formData.address);
+    data.append("city", formData.city);
+    data.append("postalCode", formData.postalCode);
+
     data.append("images", fileList[0].originFileObj);
 
     const config = {
@@ -42,7 +38,6 @@ const SignUp = () => {
       },
     };
     const url = "http://localhost:5000/signup";
-
     try {
       const response = await axios.post(url, data, config);
       setUser(response.data.user);
@@ -61,7 +56,7 @@ const SignUp = () => {
 
   const normFile = (e) => {
     setFileList(e.fileList);
-    // console.log(e.fileList);
+    console.log(e.fileList);
     if (Array.isArray(e)) {
       return e;
     }
@@ -81,6 +76,7 @@ const SignUp = () => {
     },
     fileList,
   };
+
   const handleGoogle = () => {
     googleSignIn()
       .then((result) => {
@@ -245,6 +241,7 @@ const SignUp = () => {
                         </Button>
                       </Upload>
                     </Form.Item>
+
                     <Form.Item
                       label="Password"
                       name="password"
