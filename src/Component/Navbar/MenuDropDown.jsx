@@ -29,9 +29,9 @@ const MenuDropDown = () => {
             <img
               className="rounded-full"
               src={
-                user 
+                user?.user
                   ? `http://localhost:5000/image/${user?.user?.user_image}`
-                  : avatarImg
+                  : user?.photoURL || avatarImg
               }
               alt="profile"
               height="30"

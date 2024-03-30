@@ -1,22 +1,25 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../Provider/AuthProvider";
 
 const Wishlist = () => {
+    const {user} = useContext(AuthContext)
     const [listData, setListData] = useState([])
 
+    
     useEffect(() => {
-        const getFlatDetails = async () => {
+        const getWishListDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/wishlist`);
+                const response = await axios.get(`http://localhost:5000/wishlist/${user?.email}`);
                 setListData(response.data);
             } catch (error) {
                 console.error("Error fetching flat details:", error);
             }
         };
-        getFlatDetails();
-    },);
-
-    // console.log(listData);
+        getWishListDetails();
+    },[]);
+    
+    console.log(listData);
 
     const handleDelete = async (id) => {
         try {

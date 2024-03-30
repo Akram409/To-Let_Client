@@ -10,7 +10,7 @@ import { UploadOutlined } from "@ant-design/icons";
 const MyAccount = () => {
   const [openModal, setOpenModal] = useState(false);
   const { user } = useContext(AuthContext);
-  console.log("userData", user);
+  console.log("userData11", user?.photoURL);
 
   const [profile, setProfile] = useState([]);
 
@@ -95,7 +95,12 @@ const MyAccount = () => {
             <div className="">
               <img
                 alt="profile"
-                src={`http://localhost:5000/image/${user?.user?.user_image}`}
+                src={
+                  user?.user
+                    ? `http://localhost:5000/image/${user?.user?.user_image}`
+                    : user?.photoURL || 'default_image_url_here'
+                }
+                
                 className="mx-auto object-cover rounded-full h-32 w-32  border-4 border-black  "
               />
             </div>
@@ -103,10 +108,10 @@ const MyAccount = () => {
               <div className="flex flex-wrap justify-between text-sm text-gray-600 ">
                 <div className="flex-1">
                   <p className="flex mr-3 text-lg">
-                    First Name : {user?.user?.firstName}
+                    First Name : {user?.user?.firstName || user?.displayName?.split(' ')[0]}
                   </p>
                   <p className="flex flex-col mt-3 text-lg">
-                    Last Name : {user?.user?.lastName}
+                    Last Name : {user?.user?.lastName || user?.displayName?.split(' ')[1]}
                   </p>
                   <p className="flex flex-col mt-3 text-lg">
                     Age:{user?.user?.age}
