@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../../Provider/AuthProvider";
 
 const FindFlat = () => {
   const [flatData, setFlatData] = useState([]);
@@ -9,6 +10,8 @@ const FindFlat = () => {
   const [priceSort, setPriceSort] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [flatsPerPage] = useState(8);
+  const {user} = useContext(AuthContext)
+  console.log(user);
 
   const handleClick = (button) => {
     setActiveButton(button);
@@ -24,7 +27,7 @@ const FindFlat = () => {
     getAllCat();
   }, [searchValue, priceSort]);
 
-  // console.log("flatdata", flatData);
+  // console.log("flatdataaa", flatData);
 
   //search
 
@@ -39,15 +42,16 @@ const FindFlat = () => {
   // add To flat Wishlist-----------------------
 
   const addToWishlist = async (flat) => {
-    console.log(flat);
+    // console.log("jjjjjjjjjjjjjjj",flat);
     try {
       const flatData = {
-        userEmail: flat?.userEmail,
-        userId: flat?.userId,
-        flatWishList: flat?._id,
+        userEmail: user?.email,
+        userId: user?._id,
+        flatWishList: flat,
         roommateWishList: "",
       };
-      console.log(flatData);
+
+      console.log("hello",flatData);
 
       await axios.post(`http://localhost:5000/wishList`, flatData);
       console.log("Added to wishlist:", flat);

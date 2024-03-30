@@ -88,9 +88,9 @@ const MyAccount = () => {
   };
 
   return (
-    <div className="flex justify-center gap-16 justify-items-center items-center">
-      <div className="flex justify-center items-center mt-5">
-        <div className="shadow-lg border-2 border-black rounded-2xl 4">
+    <div className="flex justify-center lg:flex-row flex-col gap-16 justify-items-center items-center px-4">
+      <div className="flex justify-center lg:flex-row flex-col  items-center mt-5">
+        <div className="shadow-lg border-2 border-black rounded-2xl">
           <div className=" flex flex-col items-center justify-center p-4 ">
             <div className="">
               <img
