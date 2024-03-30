@@ -143,13 +143,13 @@ const Login = () => {
   };
 
   return (
-    <div className="">
-      <div className="flex justify-center justify-items-center items-center">
-        <div className="card w-96 border border-black shadow-2xl">
-          <div className="card-body">
-            <div className="flex flex-col w-auto border-opacity-50 ">
+    <div className="mt-5">
+      <div className="flex justify-center lg:flex-row flex-col lg:gap-16 justify-items-center items-center lg:px-44">
+        <div className="lg:w-[500px] lg:flex-row flex-col border border-black shadow-2xl rounded-lg">
+          <div className="p-2">
+            <div className="flex flex-col lg:w-auto border-opacity-50 ">
               <div className="grid card rounded-box place-items-center">
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 mt-4">
                   <button
                     className="btn border-black btn-wide bg-[#1877F2]"
                     onClick={handleFB}
@@ -160,7 +160,7 @@ const Login = () => {
                     </span>
                   </button>
                   <button
-                    className="btn border-2 border-black btn-wide"
+                    className="btn border-2 border-black btn-wide mt-5"
                     onClick={handleGoogle}
                   >
                     <FcGoogle size="2.2em" />
@@ -243,14 +243,22 @@ const Login = () => {
             </div>
           </div>
         </div>
-
-        <div>
-          <Lottie
-            animationData={house}
-            loop={true}
-            style={{ width: "700px", height: "550px" }}
-          />
+        <div class="w-full">
+        <div class="flex justify-center">
+          <div class="lg:w-[400px] xl:w-[600px]">
+            <div class="overflow-hidden">
+              <div class="aspect-w-16 aspect-h-9">
+                <Lottie
+                   animationData={house}
+                   loop={true}
+                  class="object-cover"
+                />
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+        
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ const MyAccount = () => {
   const [updateProfiles, setUpdateProfiles] = useState(null);
 
   const editData = (_id, editData) => {
-    console.log("",editData);
+    console.log("", editData);
     setUpdateProfiles(editData);
     setOpenModal(true);
   };
@@ -88,10 +88,10 @@ const MyAccount = () => {
   };
 
   return (
-    <div className="flex justify-center gap-16 justify-items-center items-center">
-      <div className="flex justify-center items-center mt-5">
-        <div className="shadow-lg border-2 border-black rounded-2xl 4">
-          <div className=" flex flex-col items-center justify-center p-4 ">
+    <div className="flex justify-center lg:flex-row flex-col lg:gap-16 justify-items-center items-center lg:px-44">
+      <div className="flex justify-center lg:flex-row flex-col  items-center mt-5">
+        <div className="shadow-lg border-2 border-black rounded-2xl">
+          <div className="flex flex-col items-center justify-center p-4 ">
             <div className="">
               <img
                 alt="profile"
@@ -100,11 +100,11 @@ const MyAccount = () => {
                     ? `http://localhost:5000/image/${user?.user?.user_image}`
                     : user?.photoURL || 'default_image_url_here'
                 }
-                
-                className="mx-auto object-cover rounded-full h-32 w-32  border-4 border-black  "
+
+                className="mx-auto object-cover rounded-full h-16 w-16 lg:h-32 lg:w-32  border-4 border-black  "
               />
             </div>
-            <div className="w-[400px] p-2 mt-6 rounded-lg">
+            <div className="lg:w-[400px] p-2 mt-6 rounded-lg">
               <div className="flex flex-wrap justify-between text-sm text-gray-600 ">
                 <div className="flex-1">
                   <p className="flex mr-3 text-lg">
@@ -136,13 +136,13 @@ const MyAccount = () => {
                       Update Profile
                     </button>
                     <div
-                      className={`fixed flex justify-center items-center z-[100] ${openModal ? "visible opacity-1" : "invisible opacity-0"
+                      className={`fixed flex px-1 lg:justify-center items-center z-[100] ${openModal ? "visible opacity-1" : "invisible opacity-0"
                         } inset-0 backdrop-blur-sm bg-black/20 duration-100`}
                     >
                       <div
-                        className={`absolute max-w-md  p-4 text-center bg-white drop-shadow-2xl rounded-lg ${openModal
-                            ? "scale-1 opacity-1 duration-300"
-                            : "scale-0 opacity-0 duration-150"
+                        className={`absolute max-w-sm lg:max-w-md h-[300px] overflow-y-auto lg:h-[500px] p-4 text-center bg-white drop-shadow-2xl rounded-lg ${openModal
+                          ? "scale-1 opacity-1 duration-300"
+                          : "scale-0 opacity-0 duration-150"
                           }`}
                       >
                         <svg
@@ -191,7 +191,7 @@ const MyAccount = () => {
                               ? user?.location?.postalCode
                               : "",
                             password: user
-                            ? user?.password
+                              ? user?.password
                               : "",
                           }}
                           onFinish={onFinish}
@@ -203,12 +203,12 @@ const MyAccount = () => {
                             name="firstName"
                             className="mb-4"
                             initialValue={
-                              user ?. user?.firstName 
+                              user?.user?.firstName
                             }
                           >
                             <Input
                               placeholder={
-                                user ?. user?.firstName 
+                                user?.user?.firstName
                               }
                             />
                           </Form.Item>
@@ -217,12 +217,12 @@ const MyAccount = () => {
                             name="lastName"
                             className="mb-4"
                             initialValue={
-                              user ?. user?.lastName 
+                              user?.user?.lastName
                             }
                           >
                             <Input
                               placeholder={
-                                user ?. user?.lastName 
+                                user?.user?.lastName
                               }
                             />
                           </Form.Item>
@@ -231,12 +231,12 @@ const MyAccount = () => {
                             name="age"
                             label="Age"
                             initialValue={
-                              user ?. user?.age 
+                              user?.user?.age
                             }
                           >
                             <Input
                               placeholder={
-                                user ?. user?.age 
+                                user?.user?.age
                               }
                             />
                           </Form.Item>
@@ -262,14 +262,14 @@ const MyAccount = () => {
                             name="address"
                             className="mb-5 "
                             initialValues={
-                              user ?. user?.location?.address
-                              
+                              user?.user?.location?.address
+
                             }
                           >
                             <Input
                               placeholder={
-                                user ?. user?.location?.address
-                                
+                                user?.user?.location?.address
+
                               }
                             />
                           </Form.Item>
@@ -278,14 +278,14 @@ const MyAccount = () => {
                             name="city"
                             className="mb-5 "
                             initialValues={
-                              user ?. user?.location?.city
-                               
+                              user?.user?.location?.city
+
                             }
                           >
                             <Input
                               placeholder={
-                                user ?. user?.location?.city
-                                  
+                                user?.user?.location?.city
+
                               }
                             />
                           </Form.Item>
@@ -294,14 +294,14 @@ const MyAccount = () => {
                             name="postalCode"
                             className="mb-5 "
                             initialValue={
-                              user ?. user?.location?.postalCode
-                                
+                              user?.user?.location?.postalCode
+
                             }
                           >
                             <Input
                               placeholder={
-                                user ?. user?.location?.postalCode
-                                 
+                                user?.user?.location?.postalCode
+
                               }
                             />
                           </Form.Item>
@@ -310,11 +310,11 @@ const MyAccount = () => {
                             name="password"
                             className="mb-5 "
                             initialValue={user
-                              ?. user?.password}
-                            
+                              ?.user?.password}
+
                           >
                             <Input.Password placeholder={user
-                              ?. user?.password} />
+                              ?.user?.password} />
                           </Form.Item>
                           <Form.Item
                             wrapperCol={{
@@ -339,13 +339,20 @@ const MyAccount = () => {
           </div>
         </div>
       </div>
-
-      <div>
-        <Lottie
-          animationData={users}
-          loop={true}
-          style={{ width: "700px", height: "550px" }}
-        />
+      <div class="w-full">
+        <div class="flex justify-center">
+          <div class="lg:w-3/4 xl:w-1/2">
+            <div class="overflow-hidden">
+              <div class="aspect-w-16 aspect-h-9">
+                <Lottie
+                  animationData={users}
+                  loop={true}
+                  class="object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -167,13 +167,13 @@ const SignUp = () => {
       });
   };
   return (
-    <div className="w-full">
-      <div className="flex  justify-center justify-items-center items-center">
-        <div className="card w-96 border border-black shadow-2xl">
-          <div className="card-body">
-            <div className="flex flex-col w-auto border-opacity-50 ">
-              <div className="grid card rounded-box place-items-center">
-                <div className="flex flex-col gap-2">
+    <div className="w-full flex justify-center px-4">
+      <div className="flex justify-center lg:flex-row flex-col lg:gap-16 justify-items-center items-center">
+        <div className="lg:w-[500px] lg:flex-row flex-col border border-black shadow-2xl rounded-lg mt-5">
+          <div className="p-2">
+            <div className="flex flex-col lg:w-auto border-opacity-50 ">
+              <div className="grid rounded-box place-items-center">
+                <div className="flex flex-col gap-2 mt-5">
                   <button
                     className="btn border-black btn-wide bg-[#1877F2]"
                     onClick={handleFB}
@@ -195,7 +195,7 @@ const SignUp = () => {
                 </div>
               </div>
               <div className="divider">OR</div>
-              <div className="grid card rounded-box place-items-center">
+              <div className="grid rounded-box place-items-center px-2">
                 <div>
                   <Form
                     name="basic"
@@ -361,13 +361,21 @@ const SignUp = () => {
             </div>
           </div>
         </div>
-
-        <div>
-          <Lottie
-            animationData={house2}
-            loop={true}
-            style={{ width: "800px", height: "600px" }}
-          />
+        {/* lottie  */}
+        <div class="w-full px-2">
+          <div class="flex justify-center">
+            <div class="w-[200px] lg:w-[300px] xl:w-[600px]">
+              <div class="overflow-hidden">
+                <div class="aspect-w-16 aspect-h-9">
+                  <Lottie
+                     animationData={house2}
+                     loop={true}
+                    class="object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

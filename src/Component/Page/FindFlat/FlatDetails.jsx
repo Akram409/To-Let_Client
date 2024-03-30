@@ -27,7 +27,7 @@ const FlatDetails = () => {
             console.error("Error fetching flat details:", error);
         }
     };
-    console.log("flatdata", flatDetails)
+    // console.log("flatdata", flatDetails)
     const menus = [
 
         {

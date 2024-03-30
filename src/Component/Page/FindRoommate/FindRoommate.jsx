@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../../Provider/AuthProvider";
 
 const FindRoommate = () => {
   const [activeButton, setActiveButton] = useState("roommate");
@@ -10,7 +11,8 @@ const FindRoommate = () => {
   const [gender, setGender] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [roommatesPerPage] = useState(8);
-
+  const {user} = useContext(AuthContext)
+  console.log(user);
   const handleClick = (button) => {
     setActiveButton(button);
   };
@@ -51,14 +53,14 @@ const FindRoommate = () => {
   const addToRoommateWishlist = async (roommate) => {
     console.log(roommate);
     try {
-      const roomMate = {
-        userEmail: roommate?.userEmail,
-        userId: roommate?.userId,
-        roommateWishList: roommate?._id,
+      const roomMates = {
+        userEmail: user?.email,
+        userId: user?._id,
+        roommateWishList: roommate,
         flatWishList: "",
       };
-      console.log(roomMate);
-      await axios.post(`http://localhost:5000/wishlist`, roomMate);
+      console.log(roomMates);
+      await axios.post(`http://localhost:5000/wishlist`, roomMates);
       console.log("Added to wishlist:", roommate);
     } catch (error) {
       console.error("Error adding to wishlist:", error);
