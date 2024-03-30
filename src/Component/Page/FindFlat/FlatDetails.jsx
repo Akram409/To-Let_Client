@@ -3,28 +3,31 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom"
 
 const FlatDetails = () => {
-
-    const [flatDetails, setFlatDetails] = useState([]);
+    const [openModal, setOpenModal] = useState(false);
+    const [flatDetails, setFlatDetails] = useState({});
     const { id } = useParams();
-
+    const [allFlatImages, setAllFlatImages] = useState([]);
+    console.log(id);
+    
     useEffect(() => {
-        const getFlatDetails = async () => {
-            try {
-                const res = await axios.get(`http://localhost:5000/flatDetails/${id}`);
-                console.log(res.data);
-                setFlatDetails(res.data); 
-                // console.log("flatdata", res.data);
-            } catch (error) {
-                console.error("Error fetching flat details:", error);
-            }
-        };
+      
         getFlatDetails();
     }, [id]);
 
-    // console.log("flatdata", flatDetails[0]?.flatList.description.type)
 
-
-
+    const getFlatDetails = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5000/flatDetails/${id}`);
+            setFlatDetails(response.data);
+            if (response.data.flatList?.images) {
+                setAllFlatImages(response.data.flatList?.images);
+            }
+            // console.log("flatdata", res.data);
+        } catch (error) {
+            console.error("Error fetching flat details:", error);
+        }
+    };
+    console.log("flatdata", flatDetails)
     const menus = [
 
         {
@@ -69,25 +72,41 @@ const FlatDetails = () => {
             {/* details hero section  */}
             <div className="w-11/12 mx-auto lg:flex border-2 border-black mt-3 rounded-lg">
                 <div className="lg:w-[50%]">
-                    <img src="https://homeid-elementor-demo7.g5plus.net/wp-content/uploads/2022/12/home-bg-01.jpg" alt="" className=' h-[500px] w-full' />
+                    <img src={`http://localhost:5000/image/${flatDetails?.flatList?.images[0]}`} alt="" className=' h-[500px] w-full' />
                 </div>
                 <div className="lg:w-[50%] grid grid-cols-1 md:grid-cols-2  h-[500px] ">
                     <div className="bg-cover overflow-hidden relative border-2 border-black">
-                        <img src="https://i.ibb.co/3ykNgd3/t-2.jpg" alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
+                        <img src={`http://localhost:5000/image/${flatDetails?.flatList?.images[1]}`} alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
                     </div>
                     <div className="bg-cover overflow-hidden relative border-2 border-black">
-                        <img src="https://i.ibb.co/vY2xbF0/t-3.jpg" alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
+                        <img src={`http://localhost:5000/image/${flatDetails?.flatList?.images[2]}`} alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
                     </div>
                     <div className="bg-cover overflow-hidden relative border-2 border-black">
-                        <img src="https://i.ibb.co/JBQym2Z/t-4.jpg" alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
+                        <img src={`http://localhost:5000/image/${flatDetails?.flatList?.images[3]}`} alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
 
                     </div>
                     <div className="bg-cover overflow-hidden relative border-2 border-black">
-                        <img src="https://i.ibb.co/grcfNkP/t-1.jpg" alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
+                        <img src={`http://localhost:5000/image/${flatDetails?.flatList?.images[4]}`} alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
                         <div className="absolute left-0  bottom-[5%] w-full flex justify-end  text-center ">
                             <div className=" bg-white px-3 py-2 text-black rounded-lg shadow-lg border-2 border-black mr-3">
 
-                                <button className="">Show All Photos</button>
+                            <div>
+                                    <button onClick={() => setOpenModal(true)} className="rounded-sm  px-5 py-[6px] text-black" id="_modal_NavigateUI">Show All Photo</button>
+                                    <div onClick={() => setOpenModal(false)} className={`fixed z-[100] flex items-center justify-center ${openModal ? 'visible opacity-100' : 'invisible opacity-0'} inset-0 bg-black/20 backdrop-blur-sm duration-100 dark:bg-white/10`}>
+                                        <div onClick={(e_) => e_.stopPropagation()} className={`text- absolute max-w-xl rounded-sm h-96 overflow-y-auto bg-white p-6 drop-shadow-lg dark:bg-black dark:text-white ${openModal ? 'scale-1 opacity-1 duration-300' : 'scale-0 opacity-0 duration-150'}`}>
+                                            <h1 className="mb-2 text-2xl font-semibold">All Flat Images!</h1>
+                                            {allFlatImages.map((image, index) => (
+                                                <div key={index} className="flex-1 gap-2 ">
+                                                    <img src={`http://localhost:5000/image/${image}`} alt="" className='h-[500px] w-full mb-4' />
+                                                </div>
+                                            ))}
+                                            <div className="flex justify-end">
+
+                                                <button onClick={() => setOpenModal(false)} className="rounded-sm border border-red-600 px-6 py-[6px] text-red-600 duration-150 hover:bg-red-600 hover:text-white">X</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -104,21 +123,21 @@ const FlatDetails = () => {
                                 <div className="mb-16">
                                     <div className="mb-5">
                                         <h2 className="lg:text-xl font-medium text-black">
-                                            Home type: {flatDetails[0]?.flatList.description.type}
+                                            Home type: {flatDetails?.flatList?.description?.type}
 
                                         </h2>
                                         <p className="text-black  font-medium inline-block md:text-lg mt-1">
-                                            Location:{flatDetails[0]?.flatList?.description?.location?.address},
-                                            {flatDetails[0]?.flatList?.description?.location?.city}
+                                            Location:{flatDetails?.flatList?.description?.location?.address},
+                                            {flatDetails?.flatList?.description?.location?.city}
                                         </p>
                                     </div>
                                     <div className="border-t-4 border-b-4">
                                         <h1 className="mt-8 lg:text-3xl  mb-[12px] font-semibold text-black"> Basic Information</h1>
                                         <ul className="mb-8 lg:text-xl  text-black">
-                                            <li> - Location: {flatDetails[0]?.flatList?.description?.location?.city}</li>
-                                            <li> - Bed: {flatDetails[0]?.flatList?.description?.bedroom} bedroom</li>
-                                            <li> - Bath: {flatDetails[0]?.flatList?.description?.bedroom} bedroom</li>
-                                            <li> - Size: {flatDetails[0]?.flatList?.description?.size} size</li>
+                                            <li> - Location: {flatDetails?.flatList?.description?.location?.city}</li>
+                                            <li> - Bed: {flatDetails?.flatList?.description?.bedroom} bedroom</li>
+                                            <li> - Bath: {flatDetails?.flatList?.description?.bedroom} bedroom</li>
+                                            <li> - Size: {flatDetails?.flatList?.description?.size} size</li>
                                         </ul>
 
                                     </div>
@@ -141,7 +160,7 @@ const FlatDetails = () => {
                                 className="h-auto p-5 md:w-[416px] max-w-[416px] mt-3 border-2 border-black rounded-lg" >
                                 <div>
                                     <div className="flex items-center justify-between">
-                                        <h2 className="text-3xl font-bold my-5">$ N/A</h2>
+                                        <h2 className="text-3xl font-bold my-5">${flatDetails?.flatList?.description?.rent}</h2>
                                         <svg width={30} className="hover:fill-red-500 hover:stroke-red-500 stroke-2 fill-transparent stroke-black " viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ cursor: 'pointer' }}><g strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M2 9.1371C2 14 6.01943 16.5914 8.96173 18.9109C10 19.7294 11 20.5 12 20.5C13 20.5 14 19.7294 15.0383 18.9109C17.9806 16.5914 22 14 22 9.1371C22 4.27416 16.4998 0.825464 12 5.50063C7.50016 0.825464 2 4.27416 2 9.1371Z"></path></g></svg>
                                     </div>
                                     <button

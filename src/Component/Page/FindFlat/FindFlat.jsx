@@ -28,7 +28,7 @@ const FindFlat = () => {
     setSearchValue(e.target.value);
   };
 
-  const handlePriceSortChange = (e) => {
+  const handlePriceSort = (e) => {
     setPriceSort(e.target.value);
   };
 
@@ -40,8 +40,16 @@ const FindFlat = () => {
   const addToWishlist = async (flat) => {
     console.log(flat);
     try {
+      const flatData = {
+        userEmail: flat?.userEmail,
+        userId: flat?.userId,
+        flatWishList: flat?._id,
+        roommateWishList: "",
+      }
+      console.log(flatData);
 
-      await axios.post(`http://localhost:5000/wishlist`, { flat });
+
+      await axios.post(`http://localhost:5000/wishList`, flatData);
       console.log('Added to wishlist:', flat);
 
     } catch (error) {
@@ -88,20 +96,7 @@ const FindFlat = () => {
           </div>
 
           <select
-            
-            defaultValue={"bold"}
-            className="select select-bordered border border-gray-800 bg-gray-100 px-4 py-3 lg:w-auto w-[20vw] font-bold border-main focus:border-main rounded-full  join-item"
-          >
-            <option className="font-bold" value="bold" disabled>
-              Rent
-            </option>
-            <option>High To Low</option>
-            <option>Low To High</option>
-          </select>
-
-          <select
-            value={priceSort}
-            onChange={handlePriceSortChange}
+            onChange={handlePriceSort}
             defaultValue={"bold"}
             className="select select-bordered border border-gray-800 bg-gray-100 px-4 py-2 lg:w-auto w-[20vw] font-bold border-main focus:border-main rounded-full  join-item"
           >
@@ -122,7 +117,7 @@ const FindFlat = () => {
         {
           flatData.map((flat, index) => (
             <Link key={index} to={`/flatDetails/${flat._id}`} className="block">
-              <div className="px-4 py-8 shadow-lg max-w-[350px] font-sans rounded-xl space-y-6 my-5 mx-auto bg-white border-black border-2">
+              <div className="shadow-lg max-w-[350px] font-sans rounded-xl space-y-6 my-5 mx-auto bg-white border-black border-2">
                 <div className="flex justify-center w-full h-48 lg:h-[280px] relative">
                   <div className="flex justify-end items-center left-4 right-4 top-4 absolute">
                     <button className="flex items-center" onClick={() => addToWishlist(flat)}>
@@ -133,9 +128,9 @@ const FindFlat = () => {
                       </svg>
                     </button>
                   </div>
-                  <img className="rounded-lg bg-black/40 w-full h-full" src={flat.flatList.images[0]} alt="card navigate ui" />
+                  <img className="rounded-lg bg-black/40 w-full h-full" src={`http://localhost:5000/image/${flat.flatList.images[0]}`} alt="card navigate ui" />
                 </div>
-                <div className="mt-3 flex justify-between text-sm">
+                <div className="mt-3 flex justify-between text-sm px-2 ">
                   <div>
                     <h3 className="text-gray-900 group-hover:underline group-hover:underline-offset-4">
                       Location {flat.flatList.description.location.address}, {flat.flatList.description.location.city}, {flat.flatList.description.location.postalCode}
@@ -144,7 +139,7 @@ const FindFlat = () => {
                       HomeType: {flat.flatList.description.type}, {flat.flatList.description.bedroom} bedroom Flat
                     </p>
                   </div>
-                  <p className="text-gray-900 font-bold text-2xl">${flat.flatList.price} N/A</p>
+                  <p className="text-gray-900 font-bold text-lg mb-6">${flat.flatList.description.rent}</p>
                 </div>
               </div>
             </Link>
