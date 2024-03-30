@@ -7,8 +7,8 @@ import { AuthContext } from "../../Provider/AuthProvider";
 const MenuDropDown = () => {
   const [isOpen, setIsOpen] = useState(true);
   const { auths, logOut } = useContext(AuthContext);
-  const user = auths?.user;
-  console.log(user?.user_image)
+  const user = auths?.user?.user;
+  console.log("Menu",auths?.user?.user)
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">

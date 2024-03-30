@@ -12,7 +12,7 @@ const MyAccount = () => {
   const [formData, setFormData] = useState({});
   const [fileList, setFileList] = useState([]);
   const { auths } = useContext(AuthContext);
-  const user = auths?.user;
+  const user = auths?.user?.user;
   console.log("userData11", user);
   const update = () => {
     console.log("updateit");
@@ -104,13 +104,13 @@ const MyAccount = () => {
                   <p className="flex flex-col mt-3 text-lg">Age:{user?.age}</p>
 
                   <p className="flex flex-col mt-3 text-lg">
-                    Address: {user?.location.address}
+                    Address: {user?.location?.address}
                   </p>
                   <p className="flex flex-col mt-3 text-lg">
-                    City: {user?.location.city}
+                    City: {user?.location?.city}
                   </p>
                   <p className="flex flex-col mt-3 text-lg mb-5">
-                    Postal code: {user?.location.postalCode}
+                    Postal code: {user?.location?.postalCode}
                   </p>
                   <div className="w-72 mx-auto flex items-center justify-center">
                     <button

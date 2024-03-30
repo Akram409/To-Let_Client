@@ -13,7 +13,7 @@ const RoommateListForm = () => {
   const [formData, setFormData] = useState({});
   const [activeTab, setActiveTab] = useState("1");
   const [fileList, setFileList] = useState([]);
-  const user = auths?.user;
+  const user = auths?.user?.user;
 
   const dateChange = (date, dateString) => {
     setSelectedDate(dateString);

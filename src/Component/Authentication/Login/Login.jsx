@@ -40,6 +40,7 @@ const Login = () => {
       login(email, password);
 
       const foundUser = allUser.find((u) => u.email === email);
+      console.log("login",foundUser)
       setAuths({status:"manual",user:foundUser});
 
       message.success("Login successful");

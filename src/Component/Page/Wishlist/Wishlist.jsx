@@ -4,7 +4,7 @@ import { AuthContext } from "../../../Provider/AuthProvider";
 
 const Wishlist = () => {
     const {auths} = useContext(AuthContext)
-    const user = auths?.user;
+    const user = auths?.user?.user;
     const [listData, setListData] = useState([])
 
     

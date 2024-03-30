@@ -87,7 +87,8 @@ const AuthProvider = ({ children }) => {
     try {
       const response = await axios.get(`http://localhost:5000/user/${email}`);
       const userData = response.data.user;
-      setAuths({ status: "firebase", user: userData });
+      console.log("function",userData)
+      setAuths({ status: "firebase", user: {user: userData} });
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -103,7 +104,7 @@ const AuthProvider = ({ children }) => {
           (currentUser.providerData[0].providerId === "google.com" ||
             currentUser.providerData[0].providerId === "facebook.com")
         ) {
-          console.log(currentUser.email);
+          console.log("current",currentUser);
           const { email } = currentUser;
           fetchUserData(email);
         } else {
