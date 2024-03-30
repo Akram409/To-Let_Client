@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Lottie from "lottie-react";
 import { Button, Form, Input, Upload, message } from "antd";
 import users from "../../../assets/user.json";
@@ -9,7 +10,7 @@ import { UploadOutlined } from "@ant-design/icons";
 const MyAccount = () => {
   const [openModal, setOpenModal] = useState(false);
   const { user } = useContext(AuthContext);
-  console.log("userData",user);
+  console.log("userData", user);
 
   const [profile, setProfile] = useState([]);
 
@@ -34,8 +35,7 @@ const MyAccount = () => {
   const [updateProfiles, setUpdateProfiles] = useState(null);
 
   const editData = (_id, editData) => {
-    // console.log("ttttttttttttt", _id);
-    // console.log("ttttttttttttt", editData);
+    console.log("",editData);
     setUpdateProfiles(editData);
     setOpenModal(true);
   };
@@ -124,23 +124,21 @@ const MyAccount = () => {
                   <div className="w-72 mx-auto flex items-center justify-center">
                     <button
                       onClick={() =>
-                        editData(user?.user?._id, profile?.user)
+                        editData(user?.user?._id, user?.user)
                       }
                       className="bg-green-500 px-12 py-3 text-white p-2 rounded-lg"
                     >
                       Update Profile
                     </button>
                     <div
-                      className={`fixed flex justify-center items-center z-[100] ${
-                        openModal ? "visible opacity-1" : "invisible opacity-0"
-                      } inset-0 backdrop-blur-sm bg-black/20 duration-100`}
+                      className={`fixed flex justify-center items-center z-[100] ${openModal ? "visible opacity-1" : "invisible opacity-0"
+                        } inset-0 backdrop-blur-sm bg-black/20 duration-100`}
                     >
                       <div
-                        className={`absolute max-w-md  p-4 text-center bg-white drop-shadow-2xl rounded-lg ${
-                          openModal
+                        className={`absolute max-w-md  p-4 text-center bg-white drop-shadow-2xl rounded-lg ${openModal
                             ? "scale-1 opacity-1 duration-300"
                             : "scale-0 opacity-0 duration-150"
-                        }`}
+                          }`}
                       >
                         <svg
                           onClick={() => setOpenModal(false)}
@@ -171,21 +169,24 @@ const MyAccount = () => {
                             span: 16,
                           }}
                           initialValues={{
-                            firstName: updateProfiles
-                              ? updateProfiles?.firstName
+                            firstName: user
+                              ? user?.firstName
                               : "",
-                            lastName: updateProfiles
-                              ? updateProfiles?.lastName
+                            lastName: user
+                              ? user?.lastName
                               : "",
-                            age: updateProfiles ? updateProfiles?.age : "",
-                            address: updateProfiles
-                              ? updateProfiles?.location?.address
+                            age: user ? user?.age : "",
+                            address: user
+                              ? user?.location?.address
                               : "",
-                            city: updateProfiles
-                              ? updateProfiles?.location?.city
+                            city: user
+                              ? user?.location?.city
                               : "",
-                            postalCode: updateProfiles
-                              ? updateProfiles?.location?.postalCode
+                            postalCode: user
+                              ? user?.location?.postalCode
+                              : "",
+                            password: user
+                            ? user?.password
                               : "",
                           }}
                           onFinish={onFinish}
@@ -197,12 +198,12 @@ const MyAccount = () => {
                             name="firstName"
                             className="mb-4"
                             initialValue={
-                              updateProfiles ? updateProfiles?.firstName : ""
+                              user ?. user?.firstName 
                             }
                           >
                             <Input
                               placeholder={
-                                updateProfiles ? updateProfiles?.firstName : ""
+                                user ?. user?.firstName 
                               }
                             />
                           </Form.Item>
@@ -211,12 +212,12 @@ const MyAccount = () => {
                             name="lastName"
                             className="mb-4"
                             initialValue={
-                              updateProfiles ? updateProfiles?.lastName : ""
+                              user ?. user?.lastName 
                             }
                           >
                             <Input
                               placeholder={
-                                updateProfiles ? updateProfiles?.lastName : ""
+                                user ?. user?.lastName 
                               }
                             />
                           </Form.Item>
@@ -225,12 +226,12 @@ const MyAccount = () => {
                             name="age"
                             label="Age"
                             initialValue={
-                              updateProfiles ? updateProfiles?.age : ""
+                              user ?. user?.age 
                             }
                           >
                             <Input
                               placeholder={
-                                updateProfiles ? updateProfiles?.age : ""
+                                user ?. user?.age 
                               }
                             />
                           </Form.Item>
@@ -256,16 +257,14 @@ const MyAccount = () => {
                             name="address"
                             className="mb-5 "
                             initialValues={
-                              updateProfiles
-                                ? updateProfiles?.location?.address
-                                : ""
+                              user ?. user?.location?.address
+                              
                             }
                           >
                             <Input
                               placeholder={
-                                updateProfiles
-                                  ? updateProfiles?.location?.address
-                                  : ""
+                                user ?. user?.location?.address
+                                
                               }
                             />
                           </Form.Item>
@@ -274,16 +273,14 @@ const MyAccount = () => {
                             name="city"
                             className="mb-5 "
                             initialValues={
-                              updateProfiles
-                                ? updateProfiles?.location?.city
-                                : ""
+                              user ?. user?.location?.city
+                               
                             }
                           >
                             <Input
                               placeholder={
-                                updateProfiles
-                                  ? updateProfiles?.location?.city
-                                  : ""
+                                user ?. user?.location?.city
+                                  
                               }
                             />
                           </Form.Item>
@@ -291,19 +288,28 @@ const MyAccount = () => {
                             label="Postal Code"
                             name="postalCode"
                             className="mb-5 "
-                            initialValues={
-                              updateProfiles
-                                ? updateProfiles?.location?.postalCode
-                                : ""
+                            initialValue={
+                              user ?. user?.location?.postalCode
+                                
                             }
                           >
                             <Input
                               placeholder={
-                                updateProfiles
-                                  ? updateProfiles?.location?.postalCode
-                                  : ""
+                                user ?. user?.location?.postalCode
+                                 
                               }
                             />
+                          </Form.Item>
+                          <Form.Item
+                            label="Password"
+                            name="password"
+                            className="mb-5 "
+                            initialValue={user
+                              ?. user?.password}
+                            
+                          >
+                            <Input.Password placeholder={user
+                              ?. user?.password} />
                           </Form.Item>
                           <Form.Item
                             wrapperCol={{
