@@ -11,7 +11,7 @@ import house2 from "../../../assets/signup.json";
 import { UploadOutlined } from "@ant-design/icons";
 
 const SignUp = () => {
-  const { googleSignIn, setUser, facebookSignIn } = useContext(AuthContext);
+  const { googleSignIn, setAuths, facebookSignIn } = useContext(AuthContext);
   const navigate = useNavigate(); // Import useNavigate hook to redirect after signup
   const navigation = useNavigation();
   const location = useLocation();
@@ -44,7 +44,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(url, data, config);
-      setUser(response.data.user);
+      setAuths({status:"manual",user:response.data.user});
       message.success("Signup successful");
       navigate("/login", { replace: true });
     } catch (error) {

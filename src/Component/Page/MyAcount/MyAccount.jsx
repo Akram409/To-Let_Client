@@ -9,67 +9,39 @@ import { UploadOutlined } from "@ant-design/icons";
 
 const MyAccount = () => {
   const [openModal, setOpenModal] = useState(false);
-  const { user } = useContext(AuthContext);
-  console.log("userData11", user?.photoURL);
-
-  const [profile, setProfile] = useState([]);
-
-  useEffect(() => {
-    const getProfile = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:5000/user/${user?.email}`
-        );
-        // console.log(res.data);
-        setProfile(res.data);
-        // console.log("flatdata", res.data);
-      } catch (error) {
-        console.error("Error fetching flat details:", error);
-      }
-    };
-    getProfile();
-  }, [user?.email]);
-
-  // console.log("profilettttttt", profile?.user);
-
-  const [updateProfiles, setUpdateProfiles] = useState(null);
-
-  const editData = (_id, editData) => {
-    console.log("",editData);
-    setUpdateProfiles(editData);
-    setOpenModal(true);
+  const [formData, setFormData] = useState({});
+  const [fileList, setFileList] = useState([]);
+  const { auths } = useContext(AuthContext);
+  const user = auths?.user;
+  console.log("userData11", user);
+  const update = () => {
+    console.log("updateit");
   };
-
-  // console.log("updateProfiles", updateProfiles);
-
+  useEffect(() => {
+    update();
+  }, [auths]);
   const onFinish = async (values) => {
-    const nonEmptyValues = Object.fromEntries(
-      Object.entries(values).filter(([value]) => value !== "")
-    );
+    console.log("values", values);
+    const data = new FormData();
+    data.append("firstName", values.firstName || user?.firstName);
+    data.append("lastName", values.lastName || user?.lastName);
+    data.append("age", values.age || user?.age);
+    data.append("address", values.address || user?.location?.address);
+    data.append("city", values.city || user?.location?.city);
+    data.append("postalCode", values.postalCode || user?.location?.postalCode);
+    data.append("password", values.password);
+    data.append("images", fileList[0]?.originFileObj);
 
-    const userData = { ...updateProfiles };
-    Object.keys(nonEmptyValues).forEach((key) => {
-      if (key === "address" || key === "city" || key === "postalCode") {
-        userData.location = {
-          ...userData.location,
-          [key]: nonEmptyValues[key],
-        };
-      } else {
-        userData[key] = nonEmptyValues[key];
-      }
-    });
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+    const url = `http://localhost:5000/update/${user?.email}`;
 
     try {
-
-      const response = await axios.patch(
-        `http://localhost:5000/update/${user?.user?.email}`,
-        userData
-      );
-      if (response.data.message === "User updated successfully") {
-        message.success("Update successful");
-      }
-
-      console.log("Response:", response.data);
+      const response = await axios.patch(url, data, config);
+      message.success("Profile Update successful");
     } catch (error) {
       console.error("Update failed:", error?.response?.data?.error);
       message.error("Failed to update. Please try again later.");
@@ -80,11 +52,26 @@ const MyAccount = () => {
   };
 
   const normFile = (e) => {
-    console.log("Upload event:", e);
+    setFileList(e.fileList);
+    // console.log(e.fileList);
     if (Array.isArray(e)) {
       return e;
     }
     return e?.fileList;
+  };
+
+  const props = {
+    multiple: false,
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: () => {
+      return false;
+    },
+    fileList,
   };
 
   return (
@@ -96,11 +83,12 @@ const MyAccount = () => {
               <img
                 alt="profile"
                 src={
-                  user?.user
-                    ? `http://localhost:5000/image/${user?.user?.user_image}`
-                    : user?.photoURL || 'default_image_url_here'
+                  auths.status === "manual"
+                    ? `http://localhost:5000/image/${user?.user_image}`
+                    : auths.status === "firebase"
+                    ? user?.user_image
+                    : " "
                 }
-                
                 className="mx-auto object-cover rounded-full h-32 w-32  border-4 border-black  "
               />
             </div>
@@ -108,42 +96,40 @@ const MyAccount = () => {
               <div className="flex flex-wrap justify-between text-sm text-gray-600 ">
                 <div className="flex-1">
                   <p className="flex mr-3 text-lg">
-                    First Name : {user?.user?.firstName || user?.displayName?.split(' ')[0]}
+                    First Name : {user?.firstName}
                   </p>
                   <p className="flex flex-col mt-3 text-lg">
-                    Last Name : {user?.user?.lastName || user?.displayName?.split(' ')[1]}
+                    Last Name : {user?.lastName}
                   </p>
-                  <p className="flex flex-col mt-3 text-lg">
-                    Age:{user?.user?.age}
-                  </p>
+                  <p className="flex flex-col mt-3 text-lg">Age:{user?.age}</p>
 
                   <p className="flex flex-col mt-3 text-lg">
-                    Address: {user?.user?.location.address}{" "}
+                    Address: {user?.location.address}
                   </p>
                   <p className="flex flex-col mt-3 text-lg">
-                    City: {user?.user?.location.city}
+                    City: {user?.location.city}
                   </p>
                   <p className="flex flex-col mt-3 text-lg mb-5">
-                    Postal code: {user?.user?.location.postalCode}
+                    Postal code: {user?.location.postalCode}
                   </p>
                   <div className="w-72 mx-auto flex items-center justify-center">
                     <button
-                      onClick={() =>
-                        editData(user?.user?._id, user?.user)
-                      }
+                      onClick={() => setOpenModal(true)}
                       className="bg-green-500 px-12 py-3 text-white p-2 rounded-lg"
                     >
                       Update Profile
                     </button>
                     <div
-                      className={`fixed flex justify-center items-center z-[100] ${openModal ? "visible opacity-1" : "invisible opacity-0"
-                        } inset-0 backdrop-blur-sm bg-black/20 duration-100`}
+                      className={`fixed flex justify-center items-center z-[100] ${
+                        openModal ? "visible opacity-1" : "invisible opacity-0"
+                      } inset-0 backdrop-blur-sm bg-black/20 duration-100`}
                     >
                       <div
-                        className={`absolute max-w-md  p-4 text-center bg-white drop-shadow-2xl rounded-lg ${openModal
+                        className={`absolute max-w-md  p-4 text-center bg-white drop-shadow-2xl rounded-lg ${
+                          openModal
                             ? "scale-1 opacity-1 duration-300"
                             : "scale-0 opacity-0 duration-150"
-                          }`}
+                        }`}
                       >
                         <svg
                           onClick={() => setOpenModal(false)}
@@ -174,25 +160,12 @@ const MyAccount = () => {
                             span: 16,
                           }}
                           initialValues={{
-                            firstName: user
-                              ? user?.firstName
-                              : "",
-                            lastName: user
-                              ? user?.lastName
-                              : "",
+                            firstName: user ? user?.firstName : "",
+                            lastName: user ? user?.lastName : "",
                             age: user ? user?.age : "",
-                            address: user
-                              ? user?.location?.address
-                              : "",
-                            city: user
-                              ? user?.location?.city
-                              : "",
-                            postalCode: user
-                              ? user?.location?.postalCode
-                              : "",
-                            password: user
-                            ? user?.password
-                              : "",
+                            address: user ? user?.location?.address : "",
+                            city: user ? user?.location?.city : "",
+                            postalCode: user ? user?.location?.postalCode : "",
                           }}
                           onFinish={onFinish}
                           onFinishFailed={onFinishFailed}
@@ -201,55 +174,39 @@ const MyAccount = () => {
                           <Form.Item
                             label="First Name"
                             name="firstName"
-                            className="mb-4"
-                            initialValue={
-                              user ?. user?.firstName 
-                            }
+                            className="mb-4 font-bold"
+                            initialValue={user?.firstName}
                           >
-                            <Input
-                              placeholder={
-                                user ?. user?.firstName 
-                              }
-                            />
+                            <Input placeholder={user?.firstName} />
                           </Form.Item>
                           <Form.Item
                             label="Last Name"
                             name="lastName"
-                            className="mb-4"
-                            initialValue={
-                              user ?. user?.lastName 
-                            }
+                            className="mb-4 font-bold"
+                            initialValue={user?.lastName}
                           >
-                            <Input
-                              placeholder={
-                                user ?. user?.lastName 
-                              }
-                            />
+                            <Input placeholder={user?.lastName} />
                           </Form.Item>
 
                           <Form.Item
                             name="age"
                             label="Age"
-                            initialValue={
-                              user ?. user?.age 
-                            }
+                            className="font-bold"
+                            initialValue={user?.age}
                           >
-                            <Input
-                              placeholder={
-                                user ?. user?.age 
-                              }
-                            />
+                            <Input placeholder={user?.age} />
                           </Form.Item>
                           <Form.Item
                             name="user_image"
-                            label="Image"
                             valuePropName="fileList"
+                            label="Image"
                             getValueFromEvent={normFile}
                           >
                             <Upload
                               name="logo"
                               action="/upload.do"
                               listType="picture"
+                              {...props}
                             >
                               <Button icon={<UploadOutlined />}>
                                 Click to upload Image
@@ -260,61 +217,33 @@ const MyAccount = () => {
                           <Form.Item
                             label="Address"
                             name="address"
-                            className="mb-5 "
-                            initialValues={
-                              user ?. user?.location?.address
-                              
-                            }
+                            className="mb-5 font-bold"
+                            initialValues={user?.location?.address}
                           >
-                            <Input
-                              placeholder={
-                                user ?. user?.location?.address
-                                
-                              }
-                            />
+                            <Input placeholder={user?.location?.address} />
                           </Form.Item>
                           <Form.Item
                             label="City"
                             name="city"
-                            className="mb-5 "
-                            initialValues={
-                              user ?. user?.location?.city
-                               
-                            }
+                            className="mb-5 font-bold"
+                            initialValues={user?.location?.city}
                           >
-                            <Input
-                              placeholder={
-                                user ?. user?.location?.city
-                                  
-                              }
-                            />
+                            <Input placeholder={user?.location?.city} />
                           </Form.Item>
                           <Form.Item
                             label="Postal Code"
                             name="postalCode"
-                            className="mb-5 "
-                            initialValue={
-                              user ?. user?.location?.postalCode
-                                
-                            }
+                            className="mb-5 font-bold"
+                            initialValue={user?.location?.postalCode}
                           >
-                            <Input
-                              placeholder={
-                                user ?. user?.location?.postalCode
-                                 
-                              }
-                            />
+                            <Input placeholder={user?.location?.postalCode} />
                           </Form.Item>
                           <Form.Item
                             label="Password"
                             name="password"
-                            className="mb-5 "
-                            initialValue={user
-                              ?. user?.password}
-                            
+                            className="mb-5 font-bold"
                           >
-                            <Input.Password placeholder={user
-                              ?. user?.password} />
+                            <Input.Password placeholder="Enter New Password" />
                           </Form.Item>
                           <Form.Item
                             wrapperCol={{
@@ -325,6 +254,7 @@ const MyAccount = () => {
                             <button
                               className="btn btn-wide border-2 border-black btn-accent"
                               type="submit"
+                              onClick={update()}
                             >
                               Update Profile
                             </button>

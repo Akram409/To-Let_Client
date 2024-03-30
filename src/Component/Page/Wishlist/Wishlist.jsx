@@ -3,7 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../Provider/AuthProvider";
 
 const Wishlist = () => {
-    const {user} = useContext(AuthContext)
+    const {auths} = useContext(AuthContext)
+    const user = auths?.user;
     const [listData, setListData] = useState([])
 
     

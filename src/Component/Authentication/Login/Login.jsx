@@ -10,7 +10,7 @@ import Lottie from "lottie-react";
 import house from "../../../assets/login.json";
 
 const Login = () => {
-  const { googleSignIn, setUser, login, facebookSignIn } =
+  const { googleSignIn, setAuths, login, facebookSignIn } =
     useContext(AuthContext);
   const navigate = useNavigate();
   const navigation = useNavigation();
@@ -40,7 +40,7 @@ const Login = () => {
       login(email, password);
 
       const foundUser = allUser.find((u) => u.email === email);
-      setUser(foundUser);
+      setAuths({status:"manual",user:foundUser});
 
       message.success("Login successful");
       navigate("/");
@@ -57,13 +57,11 @@ const Login = () => {
     googleSignIn()
       .then((result) => {
         const user = result.user;
-        console.log(user);
 
         const fullName = user.displayName.split(" ");
         const firstName = fullName[0];
         const lastName = fullName.slice(1).join(" ");
 
-        console.log(user);
         const saveUser = {
           firstName: firstName,
           lastName: lastName,
@@ -77,7 +75,6 @@ const Login = () => {
             postalCode: "",
           },
         };
-        console.log(saveUser);
 
         axios
           .post("http://localhost:5000/user", saveUser, {
@@ -85,7 +82,8 @@ const Login = () => {
               "Content-Type": "application/json",
             },
           })
-          .then(() => {
+          .then((response) => {
+            console.log(response)
             message.success("Login successful"); // Display success message
             navigate(from, { replace: true });
           })

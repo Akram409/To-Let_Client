@@ -6,14 +6,18 @@ import { AuthContext } from "../../Provider/AuthProvider";
 
 const MenuDropDown = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const { user, logOut } = useContext(AuthContext);
-  console.log(user)
+  const { auths, logOut } = useContext(AuthContext);
+  const user = auths?.user;
+  console.log(user?.user_image)
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
         <div className="hidden md:block">
-          <Link to="createRoommateList"><button className="disabled:cursor-not-allowed cursor-pointer bg-green-400 border border-black py-3 px-4 text-sm font-semibold rounded-full  transition">
-            Create new listing
+          <Link to="/createFlatList"><button className="disabled:cursor-not-allowed cursor-pointer bg-green-400 border border-black py-3 px-4 text-sm font-semibold rounded-full  transition">
+            Create new FlatList
+          </button></Link>
+          <Link to="/createRoommateList"><button className="disabled:cursor-not-allowed ms-2 cursor-pointer bg-green-400 border border-black py-3 px-4 text-sm font-semibold rounded-full  transition">
+            Create new RoommateList
           </button></Link>
         </div>
         {/* DropDownButton
@@ -29,9 +33,11 @@ const MenuDropDown = () => {
             <img
               className="rounded-full"
               src={
-                user?.user
-                  ? `http://localhost:5000/image/${user?.user?.user_image}`
-                  : user?.photoURL || avatarImg
+                auths.status === "manual"
+                  ? `http://localhost:5000/image/${user?.user_image}`
+                  : auths.status === "firebase"
+                  ? user?.user_image
+                  : avatarImg
               }
               alt="profile"
               height="30"
