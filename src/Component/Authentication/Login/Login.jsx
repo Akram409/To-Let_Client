@@ -10,7 +10,8 @@ import Lottie from "lottie-react";
 import house from "../../../assets/login.json";
 
 const Login = () => {
-  const { googleSignIn, setUser, login } = useContext(AuthContext);
+  const { googleSignIn, setUser, login, facebookSignIn } =
+    useContext(AuthContext);
   const navigate = useNavigate();
   const navigation = useNavigation();
   const location = useLocation();
@@ -54,30 +55,29 @@ const Login = () => {
 
   const handleGoogle = () => {
     googleSignIn()
-    .then((result) => {
-      const user = result.user;
-      console.log(user);
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
 
-      const fullName = user.displayName.split(' ');
-      const firstName = fullName[0];
-      const lastName = fullName.slice(1).join(' ');
+        const fullName = user.displayName.split(" ");
+        const firstName = fullName[0];
+        const lastName = fullName.slice(1).join(" ");
 
-
-      console.log(user);
-      const saveUser = {
-        firstName: firstName,
-        lastName: lastName,
-        email: user.email,
-        password: "",
-        user_image: user?.photoURL,
-        age: "",
-        location: {
-          address:"" ,
-          city: "",
-          postalCode: "",
-        }
-      };
-      console.log(saveUser);
+        console.log(user);
+        const saveUser = {
+          firstName: firstName,
+          lastName: lastName,
+          email: user.email,
+          password: "",
+          user_image: user?.photoURL,
+          age: "",
+          location: {
+            address: "",
+            city: "",
+            postalCode: "",
+          },
+        };
+        console.log(saveUser);
 
         axios
           .post("http://localhost:5000/user", saveUser, {
@@ -97,6 +97,51 @@ const Login = () => {
         console.error("Google sign-in error:", error.message);
       });
   };
+  const handleFB = () => {
+    facebookSignIn()
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+
+        const fullName = user.displayName.split(" ");
+        const firstName = fullName[0];
+        const lastName = fullName.slice(1).join(" ");
+
+        console.log(user);
+        const saveUser = {
+          firstName: firstName,
+          lastName: lastName,
+          email: user.email,
+          password: "",
+          user_image: user?.photoURL,
+          age: "",
+          location: {
+            address: "",
+            city: "",
+            postalCode: "",
+          },
+        };
+        console.log(saveUser);
+
+        axios
+          .post("http://localhost:5000/user", saveUser, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then(() => {
+            message.success("Login successful"); // Display success message
+            navigate(from, { replace: true });
+          })
+          .catch((error) => {
+            console.error("Error posting user data:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Google sign-in error:", error.message);
+      });
+  };
+
   return (
     <div className="">
       <div className="flex justify-center justify-items-center items-center">
@@ -105,7 +150,10 @@ const Login = () => {
             <div className="flex flex-col w-auto border-opacity-50 ">
               <div className="grid card rounded-box place-items-center">
                 <div className="flex flex-col gap-2">
-                  <button className="btn border-black btn-wide bg-[#1877F2]">
+                  <button
+                    className="btn border-black btn-wide bg-[#1877F2]"
+                    onClick={handleFB}
+                  >
                     <FaFacebook size="2em" color="white" />{" "}
                     <span className="text-white font-bold">
                       Continue With Facebook

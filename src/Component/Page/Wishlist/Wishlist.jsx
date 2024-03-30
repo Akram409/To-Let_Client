@@ -35,7 +35,7 @@ const Wishlist = () => {
                     <tr className="bg-green-400 text-black">
                             <th className="py-4 px-6 text-lg text-left border-b">User Email</th>
                             <th className="py-4 px-6 text-lg text-left border-b">User ID</th>
-                            <th className="py-4 px-6 text-lg text-left border-b">status</th>
+                            <th className="py-4 px-6 text-lg text-left border-b">Types</th>
                             <th className="py-4 px-6 text-lg border-b text-end">Action</th>
                         </tr>
                     </thead>
@@ -45,7 +45,7 @@ const Wishlist = () => {
                                 <td className="py-4 px-4">{item.userEmail}</td>
                                 <td className="py-4 px-6 border-b text-xl font-medium">{item.userId}</td>
                                 
-                                <td className="py-4 px-6 border-b text-lg font-medium">{item.flatWishList ? "Flat Data" : "Roommate Data"}</td>
+                                <td className="py-4 px-6 border-b text-lg font-medium">{item.flatWishList ? "FlatData" : "Roommate"}</td>
                                 <td className="py-4 px-6 border-b text-end">
                                     <button onClick={() => handleDelete(item._id)} className="bg-red-500 hover:scale-110 scale-100 transition-all duration-100 text-white py-2 px-4 rounded-md">Delete</button>
                                 </td>
