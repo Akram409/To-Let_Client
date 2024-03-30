@@ -3,17 +3,20 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom"
 
 const RoommateDetails = () => {
-
+    const [openModal, setOpenModal] = useState(false);
     const [roommateDetails, setRoommateDetails] = useState([]);
     const { id } = useParams();
-
+    const [allRoommateImages, setAllRoommateImages] = useState([]);
+    // console.log(id);
     useEffect(() => {
         const getRoommateDetails = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/roommateLists/${id}`);
-                // console.log(res.data);
+                const res = await axios.get(`http://localhost:5000/roommate/${id}`);
+                // console.log("id", res.data);
                 setRoommateDetails(res.data);
-                // console.log("flatdata", res.data); 
+                if (res.data.roomateList.images) {
+                    setAllRoommateImages(res.data.roomateList.images);
+                }
             } catch (error) {
                 console.error("Error fetching flat details:", error);
             }
@@ -21,10 +24,10 @@ const RoommateDetails = () => {
         getRoommateDetails();
     }, [id]);
 
-    // console.log("flatdata",roommateDetails[0]?.roomateList.description.bedroomType)
+    console.log("flatdata", roommateDetails)
+    console.log("flatdata", allRoommateImages)
 
 
-   
     const menus = [
 
         {
@@ -69,25 +72,41 @@ const RoommateDetails = () => {
             {/* details hero section  */}
             <div className="w-11/12 mx-auto lg:flex border-2 border-black mt-3 rounded-lg">
                 <div className="lg:w-[50%]">
-                    <img src="https://homeid-elementor-demo7.g5plus.net/wp-content/uploads/2022/12/home-bg-01.jpg" alt="" className=' h-[500px] w-full' />
+                    <img src={`http://localhost:5000/image/${roommateDetails?.roomateList?.images[0]}`} alt="" className=' h-[500px] w-full' />
                 </div>
                 <div className="lg:w-[50%] grid grid-cols-1 md:grid-cols-2  h-[500px] ">
                     <div className="bg-cover overflow-hidden relative border-2 border-black">
-                        <img src="https://i.ibb.co/3ykNgd3/t-2.jpg" alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
+                        <img src={`http://localhost:5000/image/${roommateDetails?.roomateList?.images[1]}`} alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
                     </div>
                     <div className="bg-cover overflow-hidden relative border-2 border-black">
-                        <img src="https://i.ibb.co/vY2xbF0/t-3.jpg" alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
+                        <img src={`http://localhost:5000/image/${roommateDetails?.roomateList?.images[2]}`} alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
                     </div>
                     <div className="bg-cover overflow-hidden relative border-2 border-black">
-                        <img src="https://i.ibb.co/JBQym2Z/t-4.jpg" alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
+                        <img src={`http://localhost:5000/image/${roommateDetails?.roomateList?.images[3]}`} alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
 
                     </div>
                     <div className="bg-cover overflow-hidden relative border-2 border-black">
-                        <img src="https://i.ibb.co/grcfNkP/t-1.jpg" alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
+                        <img src={`http://localhost:5000/image/${roommateDetails?.roomateList?.images[4]}`} alt="" className="w-full h-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-125  duration-300" />
                         <div className="absolute left-0  bottom-[5%] w-full flex justify-end  text-center ">
                             <div className=" bg-white px-3 py-2 text-black rounded-lg shadow-lg border-2 border-black mr-3">
 
-                                <button className="">Show All Photos</button>
+                                <div>
+                                    <button onClick={() => setOpenModal(true)} className="rounded-sm  px-5 py-[6px] text-black" id="_modal_NavigateUI">Show All Photo</button>
+                                    <div onClick={() => setOpenModal(false)} className={`fixed z-[100] flex items-center justify-center ${openModal ? 'visible opacity-100' : 'invisible opacity-0'} inset-0 bg-black/20 backdrop-blur-sm duration-100 dark:bg-white/10`}>
+                                        <div onClick={(e_) => e_.stopPropagation()} className={`text- absolute max-w-xl rounded-sm h-96 overflow-y-auto bg-white p-6 drop-shadow-lg dark:bg-black dark:text-white ${openModal ? 'scale-1 opacity-1 duration-300' : 'scale-0 opacity-0 duration-150'}`}>
+                                            <h1 className="mb-2 text-2xl font-semibold">All Room Images!</h1>
+                                            {allRoommateImages.map((image, index) => (
+                                                <div key={index} className="flex-1 gap-2 ">
+                                                    <img src={`http://localhost:5000/image/${image}`} alt="" className='h-[500px] w-full mb-4' />
+                                                </div>
+                                            ))}
+                                            <div className="flex justify-end">
+
+                                                <button onClick={() => setOpenModal(false)} className="rounded-sm border border-red-600 px-6 py-[6px] text-red-600 duration-150 hover:bg-red-600 hover:text-white">X</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -103,41 +122,41 @@ const RoommateDetails = () => {
                         <div className="main_details px-5 md:px-0 md:w-3/4">
                             <div className=" px-5 md:px-0 md:w-3/4">
                                 <div className="mb-16">
-                                    <div className="mb-5 flex justify-around">
-                                       <div> <img src="https://i.postimg.cc/6prP9jW9/pexels-pixabay-271795.jpg" alt=""  className="w-16 h-16 rounded-lg"/></div>
+                                    <div className="mb-5 flex justify-start gap-10">
+                                        <div> <img src="https://i.postimg.cc/6prP9jW9/pexels-pixabay-271795.jpg" alt="" className="w-16 h-16 rounded-lg" /></div>
                                         <div><h2 className="lg:text-xl font-medium text-black">
-                                           User Name: {roommateDetails[0]?.roomateList.contactPerson.firstName} {roommateDetails[0]?.roomateList.contactPerson.lastName}
+                                            User Name: {roommateDetails?.roomateList?.contact_person?.firstName} {roommateDetails?.roomateList?.contact_person?.lastName}
                                         </h2>
-                                        <h2 className="lg:text-xl font-medium text-black">
-                                            Home type: {roommateDetails[0]?.roomateList.description.bedroomType}
-                                        </h2>
-                                        <p className="text-black  font-medium inline-block md:text-lg mt-1">
-                                            Location: {roommateDetails[0]?.roomateList.description.location.address}, {roommateDetails[0]?.roomateList.description.location.city}
-                                        </p></div>
-                                        <div>Online Status : N/A</div>
+                                            <h2 className="lg:text-xl font-medium text-black">
+                                                Home type: {roommateDetails?.roomateList?.description?.bedroomType}
+                                            </h2>
+                                            <p className="text-black  font-medium inline-block md:text-lg mt-1">
+                                                Location: {roommateDetails?.roomateList?.description?.location?.address}, {roommateDetails?.roomateList?.description?.location?.city}
+                                            </p></div>
+
                                     </div>
                                     <div className="border-t-4 border-b-4">
                                         <h1 className="mt-8 lg:text-3xl  mb-[12px] font-semibold text-black">Personal Information</h1>
                                         <ul className="mb-8 lg:text-lg  text-black">
-                                            <li>- Name : {roommateDetails[0]?.roomateList.contactPerson.firstName}</li>
+                                            <li>- Name : {roommateDetails?.roomateList?.contact_person?.firstName}</li>
                                             <li>- Online Status : N/A</li>
                                             <li>- Available From : N/A</li>
-                                            <li className="">- Age and Gender : {roommateDetails[0]?.roomateList.contactPerson.userGender} </li>
-                                            <li>- Employment : {roommateDetails[0]?.roomateList.contactPerson.userEmploymentStatus}</li>
+                                            <li className="">- Age and Gender : {roommateDetails?.roomateList?.contact_person?.userGender} </li>
+                                            <li>- Employment : {roommateDetails?.roomateList?.contact_person?.userEmploymentStatus}</li>
                                         </ul>
-                                   <h1 className="mt-8 lg:text-3xl  mb-[12px] font-semibold text-black">Match Preferences</h1>
-                                   <h1 className="mt-8 lg:text-3xl  mb-[12px] font-semibold text-black">Home Details</h1>
+                                        <h1 className="mt-8 lg:text-3xl  mb-[12px] font-semibold text-black">Match Preferences</h1>
+                                        <h1 className="mt-8 lg:text-3xl  mb-[12px] font-semibold text-black">Home Details</h1>
                                         <ul className="mb-8 lg:text-xl  text-black">
-                                            <li>- Bedroom Type : {roommateDetails[0]?.roomateList.description.bedroomType}</li>
+                                            <li>- Bedroom Type : {roommateDetails?.roomateList?.description?.bedroomType}</li>
                                         </ul>
 
                                         <h1 className="mt-8 lg:text-3xl  mb-[12px] font-semibold text-black">Flatmate Preferences</h1>
                                         <ul className="mb-8 lg:text-lg  text-black">
-                                            <li>- Gender & Sexuality : {roommateDetails[0]?.roomateList.roomatePreferences.gender} </li>
-                                            <li>- Smoking at Home : {roommateDetails[0]?.roomateList.roomatePreferences.smoking}</li>
-                                            <li>- Pets : {roommateDetails[0]?.roomateList.roomatePreferences.pets}</li>
-                                            <li>- Employment : {roommateDetails[0]?.roomateList.roomatePreferences.employmentStatus}</li>
-                                        
+                                            <li>- Gender & Sexuality : {roommateDetails?.roomateList?.roomatePreferences?.gender} </li>
+                                            <li>- Smoking at Home : {roommateDetails?.roomateList?.roomatePreferences?.smoking}</li>
+                                            <li>- Pets : {roommateDetails?.roomateList?.roomatePreferences?.pets}</li>
+                                            <li>- Employment : {roommateDetails?.roomateList?.roomatePreferences?.employmentStatus}</li>
+
                                         </ul>
                                     </div>
 
@@ -159,7 +178,7 @@ const RoommateDetails = () => {
                                 className="h-auto p-5 md:w-[416px] max-w-[416px] mt-3 border-2 border-black rounded-lg" >
                                 <div>
                                     <div className="flex items-center justify-between">
-                                        <h2 className="text-3xl font-bold my-5">$ N/A</h2>
+                                        <h2 className="text-3xl font-bold my-5">${roommateDetails?.roomateList?.description?.rent}</h2>
                                         <svg width={30} className="hover:fill-red-500 hover:stroke-red-500 stroke-2 fill-transparent stroke-black " viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ cursor: 'pointer' }}><g strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M2 9.1371C2 14 6.01943 16.5914 8.96173 18.9109C10 19.7294 11 20.5 12 20.5C13 20.5 14 19.7294 15.0383 18.9109C17.9806 16.5914 22 14 22 9.1371C22 4.27416 16.4998 0.825464 12 5.50063C7.50016 0.825464 2 4.27416 2 9.1371Z"></path></g></svg>
                                     </div>
                                     <button
@@ -216,7 +235,7 @@ const RoommateDetails = () => {
                 }
             </div>
 
-           
+
 
 
 
