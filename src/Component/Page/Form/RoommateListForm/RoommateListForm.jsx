@@ -13,7 +13,7 @@ const RoommateListForm = () => {
   const [formData, setFormData] = useState({});
   const [activeTab, setActiveTab] = useState("1");
   const [fileList, setFileList] = useState([]);
-  const user = auths?.user?.user;
+  const user = auths?.user;
 
   const dateChange = (date, dateString) => {
     setSelectedDate(dateString);
@@ -61,6 +61,7 @@ const RoommateListForm = () => {
       if (nextTab === "5") {
         data.append("userEmail", user?.email);
         data.append("userId", user?._id);
+        data.append("userImage", user?.user_image);
         await axios.post(url, data, config);
         message.success("Form submitted successfully!");
         setActiveTab("1");

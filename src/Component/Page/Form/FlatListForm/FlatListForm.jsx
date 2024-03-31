@@ -22,7 +22,7 @@ const FlatListForm = () => {
   const [formData, setFormData] = useState({});
   const [activeTab, setActiveTab] = useState("1");
   const [fileList, setFileList] = useState([]);
-  const user = auths?.user?.user;
+  const user = auths?.user;
   
   // console.log(userData)
   const dateChange = (date, dateString) => {

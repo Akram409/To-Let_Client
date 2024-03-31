@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../../Provider/AuthProvider";
 
 const FindFlat = () => {
   const [flatData, setFlatData] = useState([]);
@@ -9,6 +10,8 @@ const FindFlat = () => {
   const [priceSort, setPriceSort] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [flatsPerPage] = useState(8);
+  const { auths } = useContext(AuthContext);
+  const user = auths?.user;
 
   const handleClick = (button) => {
     setActiveButton(button);
@@ -42,12 +45,12 @@ const FindFlat = () => {
     console.log(flat);
     try {
       const flatData = {
-        userEmail: flat?.userEmail,
-        userId: flat?.userId,
-        flatWishList: flat?._id,
+        userEmail: user?.email,
+        userId: user?._id,
+        flatWishList: flat,
         roommateWishList: "",
       };
-      console.log(flatData);
+      console.log("hello",flatData);
 
       await axios.post(`http://localhost:5000/wishList`, flatData);
       console.log("Added to wishlist:", flat);
@@ -60,6 +63,7 @@ const FindFlat = () => {
   const indexOfLastFlat = currentPage * flatsPerPage;
   const indexOfFirstFlat = indexOfLastFlat - flatsPerPage;
   const currentFlats = flatData.slice(indexOfFirstFlat, indexOfLastFlat);
+  // console.log(currentFlats[0].flatList.images[0])
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);

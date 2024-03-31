@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { app } from "../firebase/firebase.config";
+import { message } from "antd";
 
 export const AuthContext = createContext(null);
 
@@ -19,6 +20,7 @@ const FBprovider = new FacebookAuthProvider();
 const AuthProvider = ({ children }) => {
   const [auths, setAuths] = useState({ status: null, user: null });
   const [loading, setLoading] = useState(true);
+  
 
   const googleSignIn = () => {
     setLoading(true);
@@ -42,7 +44,9 @@ const AuthProvider = ({ children }) => {
           },
         });
         if (response) {
-          setAuths({ status: "manual", user: response.data });
+          console.log("Responseeee",response)
+          setAuths({ status: "manual", user: response.data.user });
+          
         }
       }
     } catch (error) {
@@ -73,11 +77,14 @@ const AuthProvider = ({ children }) => {
         email,
         password,
       });
-      const { token } = response.data;
+      
+      const { token,user } = response.data;
       localStorage.setItem("access-token", token);
-      setAuths({ status: "manual", user: response.data });
+      setAuths({ status: "manual", user });
+      message.success("Login successful");
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Login failed:", error.message);
+      message.error("Invalid Email and Password")
     } finally {
       setLoading(false);
     }
@@ -87,13 +94,13 @@ const AuthProvider = ({ children }) => {
     try {
       const response = await axios.get(`http://localhost:5000/user/${email}`);
       const userData = response.data.user;
-      console.log("function",userData)
-      setAuths({ status: "firebase", user: {user: userData} });
+
+      setAuths({ status: "firebase", user: userData });
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   };
-
+  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
@@ -108,6 +115,7 @@ const AuthProvider = ({ children }) => {
           const { email } = currentUser;
           fetchUserData(email);
         } else {
+          console.log("sdfjsd",currentUser)
           setAuths({ status: "manual", user: currentUser });
         }
       }

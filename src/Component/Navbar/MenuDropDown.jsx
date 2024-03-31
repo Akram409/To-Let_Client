@@ -7,7 +7,7 @@ import { AuthContext } from "../../Provider/AuthProvider";
 const MenuDropDown = () => {
   const [isOpen, setIsOpen] = useState(true);
   const { auths, logOut } = useContext(AuthContext);
-  const user = auths?.user?.user;
+  const user = auths?.user;
   console.log("Menu",auths?.user?.user)
   return (
     <div className="relative">

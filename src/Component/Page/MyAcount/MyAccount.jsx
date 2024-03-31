@@ -11,11 +11,12 @@ const MyAccount = () => {
   const [openModal, setOpenModal] = useState(false);
   const [formData, setFormData] = useState({});
   const [fileList, setFileList] = useState([]);
-  const { auths } = useContext(AuthContext);
-  const user = auths?.user?.user;
-  console.log("userData11", user);
+  const { auths, setAuths } = useContext(AuthContext);
+  const user = auths?.user;
+  console.log("🚀 ~ MyAccount ~ user:", user);
+
   const update = () => {
-    console.log("updateit");
+    // console.log("updateit");
   };
   useEffect(() => {
     update();
@@ -30,7 +31,7 @@ const MyAccount = () => {
     data.append("city", values.city || user?.location?.city);
     data.append("postalCode", values.postalCode || user?.location?.postalCode);
     data.append("password", values.password);
-    data.append("images", fileList[0]?.originFileObj);
+    data.append("images", fileList[0]?.originFileObj || user?.user_image);
 
     const config = {
       headers: {
@@ -40,7 +41,10 @@ const MyAccount = () => {
     const url = `http://localhost:5000/update/${user?.email}`;
 
     try {
-      const response = await axios.patch(url, data, config);
+      const response = await axios.put(url, data, config);
+      localStorage.setItem("access-token", response.data.token);
+      setAuths({ status: "manual", user: response.data.user });
+      console.log("REsponse", response);
       message.success("Profile Update successful");
     } catch (error) {
       console.error("Update failed:", error?.response?.data?.error);
@@ -75,10 +79,10 @@ const MyAccount = () => {
   };
 
   return (
-    <div className="flex justify-center gap-16 justify-items-center items-center">
-      <div className="flex justify-center items-center mt-5">
-        <div className="shadow-lg border-2 border-black rounded-2xl 4">
-          <div className=" flex flex-col items-center justify-center p-4 ">
+    <div className="flex justify-center lg:flex-row flex-col lg:gap-16 justify-items-center items-center lg:px-44">
+      <div className="flex justify-center lg:flex-row flex-col  items-center mt-5">
+        <div className="shadow-lg border-2 border-black rounded-2xl">
+          <div className="flex flex-col items-center justify-center p-4 ">
             <div className="">
               <img
                 alt="profile"
@@ -86,14 +90,15 @@ const MyAccount = () => {
                   auths.status === "manual"
                     ? `http://localhost:5000/image/${user?.user_image}`
                     : auths.status === "firebase"
-                    ? user?.user_image
+                    ? user?.user_image ||
+                      `http://localhost:5000/image/${user?.user_image}`
                     : " "
                 }
-                className="mx-auto object-cover rounded-full h-32 w-32  border-4 border-black  "
+                className="mx-auto object-cover rounded-full h-16 w-16 lg:h-32 lg:w-32 border-4 border-black"
               />
             </div>
-            <div className="w-[400px] p-2 mt-6 rounded-lg">
-              <div className="flex flex-wrap justify-between text-sm text-gray-600 ">
+            <div className="lg:w-[400px] p-2 mt-6 rounded-lg">
+              <div className="flex flex-wrap px-1 lg:justify-between text-sm text-gray-600 ">
                 <div className="flex-1">
                   <p className="flex mr-3 text-lg">
                     First Name : {user?.firstName}
@@ -125,7 +130,7 @@ const MyAccount = () => {
                       } inset-0 backdrop-blur-sm bg-black/20 duration-100`}
                     >
                       <div
-                        className={`absolute max-w-md  p-4 text-center bg-white drop-shadow-2xl rounded-lg ${
+                        className={`absolute max-w-sm lg:max-w-md h-[300px] overflow-y-auto lg:h-[500px] p-4 text-center bg-white drop-shadow-2xl rounded-lg ${
                           openModal
                             ? "scale-1 opacity-1 duration-300"
                             : "scale-0 opacity-0 duration-150"
@@ -196,23 +201,25 @@ const MyAccount = () => {
                           >
                             <Input placeholder={user?.age} />
                           </Form.Item>
-                          <Form.Item
-                            name="user_image"
-                            valuePropName="fileList"
-                            label="Image"
-                            getValueFromEvent={normFile}
-                          >
-                            <Upload
-                              name="logo"
-                              action="/upload.do"
-                              listType="picture"
-                              {...props}
+                          {auths.status != "firebase" && (
+                            <Form.Item
+                              name="user_image"
+                              valuePropName="fileList"
+                              label="Image"
+                              getValueFromEvent={normFile}
                             >
-                              <Button icon={<UploadOutlined />}>
-                                Click to upload Image
-                              </Button>
-                            </Upload>
-                          </Form.Item>
+                              <Upload
+                                name="logo"
+                                action="/upload.do"
+                                listType="picture"
+                                {...props}
+                              >
+                                <Button icon={<UploadOutlined />}>
+                                  Click to upload Image
+                                </Button>
+                              </Upload>
+                            </Form.Item>
+                          )}
 
                           <Form.Item
                             label="Address"
@@ -270,12 +277,20 @@ const MyAccount = () => {
         </div>
       </div>
 
-      <div>
-        <Lottie
-          animationData={users}
-          loop={true}
-          style={{ width: "700px", height: "550px" }}
-        />
+      <div class="w-full">
+        <div class="flex justify-center">
+          <div class="lg:w-3/4 xl:w-1/2">
+            <div class="overflow-hidden">
+              <div class="aspect-w-16 aspect-h-9">
+                <Lottie
+                  animationData={users}
+                  loop={true}
+                  class="object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
