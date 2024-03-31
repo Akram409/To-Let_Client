@@ -16,11 +16,11 @@ const MyAccount = () => {
   console.log("🚀 ~ MyAccount ~ user:", user);
 
   const update = () => {
-    // console.log("updateit");
+    
   };
   useEffect(() => {
     update();
-  }, [auths]);
+  }, []);
   const onFinish = async (values) => {
     console.log("values", values);
     const data = new FormData();
@@ -30,8 +30,10 @@ const MyAccount = () => {
     data.append("address", values.address || user?.location?.address);
     data.append("city", values.city || user?.location?.city);
     data.append("postalCode", values.postalCode || user?.location?.postalCode);
-    data.append("password", values.password);
-    data.append("images", fileList[0]?.originFileObj || user?.user_image);
+    data.append("password", values?.password || "");
+    data.append("images", fileList[0]?.originFileObj || "");
+    data.append("user_image", user?.user_image);
+    data.append("user_pass", user?.password);
 
     const config = {
       headers: {
@@ -42,8 +44,13 @@ const MyAccount = () => {
 
     try {
       const response = await axios.put(url, data, config);
-      localStorage.setItem("access-token", response.data.token);
-      setAuths({ status: "manual", user: response.data.user });
+      if (fileList.length > 0) {
+        localStorage.setItem("access-token", response.data.token);
+        setAuths({ status: "manual", user: response.data.user });
+      } else {
+        setAuths({ status: "firebase", user: response.data.user });
+      }
+      update();
       console.log("REsponse", response);
       message.success("Profile Update successful");
     } catch (error) {
