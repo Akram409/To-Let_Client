@@ -8,12 +8,12 @@ import { AuthContext } from "../../../../Provider/AuthProvider";
 import axios from "axios";
 
 const RoommateListForm = () => {
-  const { user } = useContext(AuthContext);
+  const { auths  } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState("");
   const [formData, setFormData] = useState({});
   const [activeTab, setActiveTab] = useState("1");
   const [fileList, setFileList] = useState([]);
-
+  const user = auths?.user;
 
   const dateChange = (date, dateString) => {
     setSelectedDate(dateString);
@@ -59,8 +59,9 @@ const RoommateListForm = () => {
     try {
       const nextTab = (parseInt(activeTab) + 1).toString();
       if (nextTab === "5") {
-        data.append("userEmail", user?.user?.email);
-        data.append("userId", user?.user?._id);
+        data.append("userEmail", user?.email);
+        data.append("userId", user?._id);
+        data.append("userImage", user?.user_image);
         await axios.post(url, data, config);
         message.success("Form submitted successfully!");
         setActiveTab("1");

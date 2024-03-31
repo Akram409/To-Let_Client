@@ -11,8 +11,9 @@ const FindRoommate = () => {
   const [gender, setGender] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [roommatesPerPage] = useState(8);
-  const {user} = useContext(AuthContext)
-  console.log(user);
+  const { auths } = useContext(AuthContext);
+  const user = auths?.user;
+
   const handleClick = (button) => {
     setActiveButton(button);
   };

@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { app } from "../firebase/firebase.config";
+import { message } from "antd";
 
 export const AuthContext = createContext(null);
 
@@ -17,8 +18,9 @@ const googleProvider = new GoogleAuthProvider();
 const FBprovider = new FacebookAuthProvider();
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [auths, setAuths] = useState({ status: null, user: null });
   const [loading, setLoading] = useState(true);
+  
 
   const googleSignIn = () => {
     setLoading(true);
@@ -42,7 +44,9 @@ const AuthProvider = ({ children }) => {
           },
         });
         if (response) {
-          setUser(response.data);
+          console.log("Responseeee",response)
+          setAuths({ status: "manual", user: response.data.user });
+          
         }
       }
     } catch (error) {
@@ -54,14 +58,14 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     verifyToken();
-  }, []); // Removed user from dependency array to avoid infinite loop
+  }, []);
 
   const logOut = () => {
     setLoading(true);
     signOut(auth)
       .then(() => {
         localStorage.removeItem("access-token");
-        setUser(null);
+        setAuths({ status: null, user: null });
       })
       .catch((error) => console.error("Sign out error:", error))
       .finally(() => setLoading(false));
@@ -73,30 +77,56 @@ const AuthProvider = ({ children }) => {
         email,
         password,
       });
-      const { token } = response.data;
+      
+      const { token,user } = response.data;
       localStorage.setItem("access-token", token);
-      setUser(response.data);
+      setAuths({ status: "manual", user });
+      message.success("Login successful");
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Login failed:", error.message);
+      message.error("Invalid Email and Password")
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchUserData = async (email) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/user/${email}`);
+      const userData = response.data.user;
+
+      setAuths({ status: "firebase", user: userData });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        console.log("google", currentUser);
-        setUser(currentUser);
+        // Check if the user was authenticated using Firebase providers
+        if (
+          currentUser.providerData &&
+          currentUser.providerData.length > 0 &&
+          (currentUser.providerData[0].providerId === "google.com" ||
+            currentUser.providerData[0].providerId === "facebook.com")
+        ) {
+          console.log("current",currentUser);
+          const { email } = currentUser;
+          fetchUserData(email);
+        } else {
+          console.log("sdfjsd",currentUser)
+          setAuths({ status: "manual", user: currentUser });
+        }
       }
     });
     return () => unsubscribe();
   }, []);
-
+  console.log("authProvider",auths)
   const authInfo = {
     login,
-    user,
-    setUser,
+    auths,
+    setAuths,
     loading,
     logOut,
     googleSignIn,

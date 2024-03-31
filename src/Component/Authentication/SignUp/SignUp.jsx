@@ -1,7 +1,7 @@
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { Button, Form, Input, Upload, message } from "antd";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate, useNavigation } from "react-router-dom";
 import { validateEmail } from "../../../lib/utils";
 import { AuthContext } from "../../../Provider/AuthProvider";
@@ -11,7 +11,7 @@ import house2 from "../../../assets/signup.json";
 import { UploadOutlined } from "@ant-design/icons";
 
 const SignUp = () => {
-  const { googleSignIn, setUser, facebookSignIn } = useContext(AuthContext);
+  const { googleSignIn,auths, setAuths, facebookSignIn } = useContext(AuthContext);
   const navigate = useNavigate(); // Import useNavigate hook to redirect after signup
   const navigation = useNavigation();
   const location = useLocation();
@@ -44,7 +44,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(url, data, config);
-      setUser(response.data.user);
+      setAuths({ status: "manual", user: response.data.user });
       message.success("Signup successful");
       navigate("/login", { replace: true });
     } catch (error) {
@@ -361,15 +361,15 @@ const SignUp = () => {
             </div>
           </div>
         </div>
-        {/* lottie  */}
+
         <div class="w-full px-2">
           <div class="flex justify-center">
             <div class="w-[200px] lg:w-[300px] xl:w-[600px]">
               <div class="overflow-hidden">
                 <div class="aspect-w-16 aspect-h-9">
                   <Lottie
-                     animationData={house2}
-                     loop={true}
+                    animationData={house2}
+                    loop={true}
                     class="object-cover"
                   />
                 </div>

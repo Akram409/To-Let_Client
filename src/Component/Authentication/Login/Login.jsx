@@ -10,7 +10,7 @@ import Lottie from "lottie-react";
 import house from "../../../assets/login.json";
 
 const Login = () => {
-  const { googleSignIn, setUser, login, facebookSignIn } =
+  const { googleSignIn, auths, setAuths, login, facebookSignIn } =
     useContext(AuthContext);
   const navigate = useNavigate();
   const navigation = useNavigation();
@@ -37,13 +37,7 @@ const Login = () => {
 
   const onFinish = async ({ email, password }) => {
     try {
-      login(email, password);
-
-      const foundUser = allUser.find((u) => u.email === email);
-      setUser(foundUser);
-
-      message.success("Login successful");
-      navigate("/");
+      await login(email, password);
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -57,13 +51,11 @@ const Login = () => {
     googleSignIn()
       .then((result) => {
         const user = result.user;
-        console.log(user);
 
         const fullName = user.displayName.split(" ");
         const firstName = fullName[0];
         const lastName = fullName.slice(1).join(" ");
 
-        console.log(user);
         const saveUser = {
           firstName: firstName,
           lastName: lastName,
@@ -77,7 +69,6 @@ const Login = () => {
             postalCode: "",
           },
         };
-        console.log(saveUser);
 
         axios
           .post("http://localhost:5000/user", saveUser, {
@@ -85,7 +76,7 @@ const Login = () => {
               "Content-Type": "application/json",
             },
           })
-          .then(() => {
+          .then((response) => {
             message.success("Login successful"); // Display success message
             navigate(from, { replace: true });
           })
@@ -243,22 +234,22 @@ const Login = () => {
             </div>
           </div>
         </div>
+
         <div class="w-full">
-        <div class="flex justify-center">
-          <div class="lg:w-[400px] xl:w-[600px]">
-            <div class="overflow-hidden">
-              <div class="aspect-w-16 aspect-h-9">
-                <Lottie
-                   animationData={house}
-                   loop={true}
-                  class="object-cover"
-                />
+          <div class="flex justify-center">
+            <div class="lg:w-[400px] xl:w-[600px]">
+              <div class="overflow-hidden">
+                <div class="aspect-w-16 aspect-h-9">
+                  <Lottie
+                    animationData={house}
+                    loop={true}
+                    class="object-cover"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-        
       </div>
     </div>
   );

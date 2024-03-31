@@ -10,8 +10,8 @@ const FindFlat = () => {
   const [priceSort, setPriceSort] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [flatsPerPage] = useState(8);
-  const {user} = useContext(AuthContext)
-  console.log(user);
+  const { auths } = useContext(AuthContext);
+  const user = auths?.user;
 
   const handleClick = (button) => {
     setActiveButton(button);
@@ -27,7 +27,7 @@ const FindFlat = () => {
     getAllCat();
   }, [searchValue, priceSort]);
 
-  // console.log("flatdataaa", flatData);
+  // console.log("flatdata", flatData);
 
   //search
 
@@ -42,7 +42,7 @@ const FindFlat = () => {
   // add To flat Wishlist-----------------------
 
   const addToWishlist = async (flat) => {
-    // console.log("jjjjjjjjjjjjjjj",flat);
+    console.log(flat);
     try {
       const flatData = {
         userEmail: user?.email,
@@ -50,7 +50,6 @@ const FindFlat = () => {
         flatWishList: flat,
         roommateWishList: "",
       };
-
       console.log("hello",flatData);
 
       await axios.post(`http://localhost:5000/wishList`, flatData);
@@ -64,6 +63,7 @@ const FindFlat = () => {
   const indexOfLastFlat = currentPage * flatsPerPage;
   const indexOfFirstFlat = indexOfLastFlat - flatsPerPage;
   const currentFlats = flatData.slice(indexOfFirstFlat, indexOfLastFlat);
+  // console.log(currentFlats[0].flatList.images[0])
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
