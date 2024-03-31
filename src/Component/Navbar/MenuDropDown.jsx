@@ -39,7 +39,6 @@ const MenuDropDown = () => {
                   ? user?.user_image
                   : avatarImg
               }
-              alt="profile"
               height="30"
               width="30"
             />

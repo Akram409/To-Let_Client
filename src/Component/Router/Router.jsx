@@ -10,8 +10,8 @@ import FlatListForm from "../Page/Form/FlatListForm/FlatListForm";
 import RoommateListForm from "../Page/Form/RoommateListForm/RoommateListForm";
 import Wishlist from "../Page/Wishlist/Wishlist";
 import MyAccount from "../Page/MyAcount/MyAccount";
-// import Profile from "../Share/Profile/Profile";
-// import PrivateRouter from "./PrivateRouter";
+import PrivateRouter from "./PrivateRouter";
+
 
 export const router = createBrowserRouter([
   {
@@ -30,38 +30,29 @@ export const router = createBrowserRouter([
         path: "/signUp",
         element: <SignUp />,
       },
-      // {
-      //   path: "/profile",
-      //   element: <PrivateRouter><Profile /></PrivateRouter>,
-      // },
-      // {
-      //   path: "/private",
-      //   element: <PrivateRouter /> ,
-      // },
-
       {
         path:"/findRoommate",
         element:<FindRoommate/>
       },
       {
         path:"/flatDetails/:id",
-        element:<FlatDetails/>
+        element:<PrivateRouter><FlatDetails/></PrivateRouter>
       },
       {
         path:"/roommateDetails/:id",
-        element:<RoommateDetails/>
+        element:<PrivateRouter><RoommateDetails/></PrivateRouter>
       },
       {
         path:"/createFlatList",
-        element:<FlatListForm/>
+        element:<PrivateRouter><FlatListForm/></PrivateRouter>
       },
       {
         path:"/createRoommateList",
-        element:<RoommateListForm/>
+        element:<PrivateRouter><RoommateListForm/></PrivateRouter>
       },
       {
         path:"/wishlist",
-        element:<Wishlist/>
+        element: <PrivateRouter><Wishlist/></PrivateRouter>
       },
       {
         path:"/myAccount",

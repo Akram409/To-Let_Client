@@ -38,6 +38,7 @@ const Login = () => {
   const onFinish = async ({ email, password }) => {
     try {
       await login(email, password);
+      
     } catch (error) {
       console.error("Login failed:", error);
     }
